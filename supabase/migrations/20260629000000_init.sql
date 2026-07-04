@@ -210,62 +210,77 @@ ALTER TABLE public.admin_rate_limits ENABLE ROW LEVEL SECURITY;
 ---------------------------------------------------------
 
 -- Profiles Policies
+DROP POLICY IF EXISTS "Users can read own profile" ON public.profiles;
 CREATE POLICY "Users can read own profile" ON public.profiles
     FOR SELECT USING (auth.uid() = id);
 
+DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
 CREATE POLICY "Users can update own profile" ON public.profiles
     FOR UPDATE USING (auth.uid() = id);
 
 -- Daily Tasks Policies
+DROP POLICY IF EXISTS "Users can manage own daily tasks" ON public.daily_tasks;
 CREATE POLICY "Users can manage own daily tasks" ON public.daily_tasks
     FOR ALL USING (auth.uid() = user_id);
 
 -- Task Completions Policies
+DROP POLICY IF EXISTS "Users can manage own task completions" ON public.task_completions;
 CREATE POLICY "Users can manage own task completions" ON public.task_completions
     FOR ALL USING (auth.uid() = user_id);
 
 -- Failure Reasons Policies
+DROP POLICY IF EXISTS "Users can manage own failure reasons" ON public.failure_reasons;
 CREATE POLICY "Users can manage own failure reasons" ON public.failure_reasons
     FOR ALL USING (auth.uid() = user_id);
 
 -- Side Quest Entries Policies
+DROP POLICY IF EXISTS "Users can manage own side quest entries" ON public.side_quest_entries;
 CREATE POLICY "Users can manage own side quest entries" ON public.side_quest_entries
     FOR ALL USING (auth.uid() = user_id);
 
 -- Goals Policies
+DROP POLICY IF EXISTS "Users can manage own goals" ON public.goals;
 CREATE POLICY "Users can manage own goals" ON public.goals
     FOR ALL USING (auth.uid() = user_id);
 
 -- Goal Tasks Policies
+DROP POLICY IF EXISTS "Users can manage own goal tasks" ON public.goal_tasks;
 CREATE POLICY "Users can manage own goal tasks" ON public.goal_tasks
     FOR ALL USING (auth.uid() = user_id);
 
 -- Goal Task Completions Policies
+DROP POLICY IF EXISTS "Users can manage own goal task completions" ON public.goal_task_completions;
 CREATE POLICY "Users can manage own goal task completions" ON public.goal_task_completions
     FOR ALL USING (auth.uid() = user_id);
 
 -- Sleep Logs Policies
+DROP POLICY IF EXISTS "Users can manage own sleep logs" ON public.sleep_logs;
 CREATE POLICY "Users can manage own sleep logs" ON public.sleep_logs
     FOR ALL USING (auth.uid() = user_id);
 
 -- Finance Categories Policies
+DROP POLICY IF EXISTS "Users can manage own finance categories" ON public.finance_categories;
 CREATE POLICY "Users can manage own finance categories" ON public.finance_categories
     FOR ALL USING (auth.uid() = user_id);
 
 -- Finance Transactions Policies
+DROP POLICY IF EXISTS "Users can manage own finance transactions" ON public.finance_transactions;
 CREATE POLICY "Users can manage own finance transactions" ON public.finance_transactions
     FOR ALL USING (auth.uid() = user_id);
 
 -- AI Chat Messages Policies
+DROP POLICY IF EXISTS "Users can manage own AI chat messages" ON public.ai_chat_messages;
 CREATE POLICY "Users can manage own AI chat messages" ON public.ai_chat_messages
     FOR ALL USING (auth.uid() = user_id);
 
 -- AI Weekly Reports Policies
+DROP POLICY IF EXISTS "Users can read own AI weekly reports" ON public.ai_weekly_reports;
 CREATE POLICY "Users can read own AI weekly reports" ON public.ai_weekly_reports
     FOR SELECT USING (auth.uid() = user_id);
 
 -- Admin Rate Limits Policies
 -- By default, deny all to ordinary users. Only accessible via service role bypass or Edge Functions.
+DROP POLICY IF EXISTS "Deny all to regular users" ON public.admin_rate_limits;
 CREATE POLICY "Deny all to regular users" ON public.admin_rate_limits
     FOR ALL TO public USING (false);
 
@@ -307,7 +322,8 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Trigger to execute on signup
-CREATE OR REPLACE TRIGGER on_auth_user_created
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
     AFTER INSERT ON auth.users
     FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
