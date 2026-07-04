@@ -8,7 +8,7 @@ The Batman Project is a premium, secure SaaS productivity web application styled
 *   **Styling**: Tailwind CSS v3 (Custom Gotham Dark palette) + Framer Motion (Transitions and Checkbox drawing effects)
 *   **Charts**: Recharts (Custom themed charts with recommendations reference zones)
 *   **Backend**: Supabase (Auth + PostgreSQL + Deno Edge Functions)
-*   **AI Engine**: OpenAI `gpt-4o-mini` via server-side proxy
+*   **AI Engine**: Google Gemini 2.5 Flash via server-side proxy
 *   **Security Configuration**: Content Security Policy (CSP), anti-clickjacking headers, and memory-only Admin JWT tracking.
 
 ---
@@ -53,7 +53,7 @@ Run the SQL migration script located in `supabase/migrations/20260629000000_init
 The application requires three server-side secrets. Configure these inside your **Supabase Dashboard > Project Settings > Edge Functions > Secrets** (or via Supabase CLI command `supabase secrets set`):
 
 ```env
-OPENAI_API_KEY=your-openai-api-key             # To authorize Alfred's AI requests
+GEMINI_API_KEY=your-gemini-api-key             # To authorize Alfred's AI requests
 SUPABASE_SERVICE_ROLE_KEY=your-service-key    # Bypasses RLS to compile user contexts and platform statistics
 ADMIN_JWT_SECRET=your-custom-jwt-secret-key   # Used to sign short-lived memory-only Admin sessions
 ```
@@ -77,7 +77,7 @@ The terminal starts on `http://localhost:5173`.
 
 ## 🛡️ Security Architecture
 
-*   **API Key Protection**: Neither `OPENAI_API_KEY` nor `SUPABASE_SERVICE_ROLE_KEY` is ever compiled into the client bundle or visible in browser traffic.
+*   **API Key Protection**: Neither `GEMINI_API_KEY` nor `SUPABASE_SERVICE_ROLE_KEY` is ever compiled into the client bundle or visible in browser traffic.
 *   **Edge Gateway Routing**: AI chats and Admin dashboard queries are routed through Edge Functions which authenticate the caller's standard JWT first.
 *   **Admin Panel Gating**: The `/admin` path is hidden with zero links in the regular UI. Admin login requests are validated by email matching and password sign-ins using the `admin-auth` Edge Function, returning a custom JWT with 2-hour expiry. This JWT is stored solely in-memory (lost on tab closure).
 *   **IP Lockout**: 5 failed admin credential attempts from a single IP address locks out further requests for 30 minutes.

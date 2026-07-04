@@ -38,10 +38,9 @@ Deno.serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL') || '';
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
     const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
-    const openAiApiKey = Deno.env.get('OPENAI_API_KEY');
 
-    if (!geminiApiKey && !openAiApiKey) {
-      throw new Error('Missing AI API Key (GEMINI_API_KEY or OPENAI_API_KEY) on the server');
+    if (!geminiApiKey) {
+      throw new Error('Missing AI API Key (GEMINI_API_KEY) on the server');
     }
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
@@ -203,59 +202,32 @@ Do not use templates, make it read like a genuine letter. Keep the formatting cl
       // Call AI provider
       let reportContent = "";
 
-      if (geminiApiKey) {
-        // Use free Gemini API from Google AI Studio
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
+      // Use Gemini API from Google AI Studio
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          contents: [
+            { role: 'user', parts: [{ text: prompt }] }
+          ],
+          systemInstruction: {
+            parts: [{ text: systemMessage }]
           },
-          body: JSON.stringify({
-            contents: [
-              { role: 'user', parts: [{ text: prompt }] }
-            ],
-            systemInstruction: {
-              parts: [{ text: systemMessage }]
-            },
-            generationConfig: {
-              temperature: 0.7
-            }
-          })
-        });
-
-        if (!response.ok) {
-          console.error(`Failed to generate Gemini report for ${user.username}:`, await response.text());
-          continue;
-        }
-
-        const geminiData = await response.json();
-        reportContent = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || "Apologies, sir. I was unable to construct the weekly report.";
-      } else if (openAiApiKey) {
-        // Fallback to OpenAI
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${openAiApiKey}`
-          },
-          body: JSON.stringify({
-            model: 'gpt-4o-mini',
-            messages: [
-              { role: 'system', content: systemMessage },
-              { role: 'user', content: prompt }
-            ],
+          generationConfig: {
             temperature: 0.7
-          })
-        });
+          }
+        })
+      });
 
-        if (!response.ok) {
-          console.error(`Failed to generate OpenAI report for ${user.username}:`, await response.text());
-          continue;
-        }
-
-        const openAiData = await response.json();
-        reportContent = openAiData.choices?.[0]?.message?.content || "Apologies, sir. I was unable to construct the weekly report due to a disruption in the feed.";
+      if (!response.ok) {
+        console.error(`Failed to generate Gemini report for ${user.username}:`, await response.text());
+        continue;
       }
+
+      const geminiData = await response.json();
+      reportContent = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || "Apologies, sir. I was unable to construct the weekly report.";
 
       // Save report in Database
       const { error: insErr } = await supabase.from('ai_weekly_reports').insert([

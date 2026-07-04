@@ -260,87 +260,56 @@ ${customContext || 'None'}
 `;
 
     // 5. Send payload to AI provider
-    const geminiApiKey = localGeminiApiKey || Deno.env.get('GEMINI_API_KEY');
-    const openAiApiKey = Deno.env.get('OPENAI_API_KEY');
+    const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
     
-    let assistantReply = "";
-
-    if (geminiApiKey) {
-      // Use free Gemini API from Google AI Studio
-      const geminiMessages = [
-        ...chatHistory.map(h => ({
-          role: h.role === 'assistant' ? 'model' : 'user',
-          parts: [{ text: h.content }]
-        })),
-        {
-          role: 'user',
-          parts: [{ text: message }]
-        }
-      ];
-
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          contents: geminiMessages,
-          systemInstruction: {
-            parts: [{ text: systemPrompt }]
-          },
-          generationConfig: {
-            temperature: 0.7
-          }
-        })
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Gemini API error response:', errorText);
-        return new Response(JSON.stringify({ error: 'Gemini AI provider returned an error.' }), {
-          status: 502,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        });
-      }
-
-      const geminiData = await response.json();
-      assistantReply = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || "My apologies, sir. I seem to have lost my line of thought.";
-    } else if (openAiApiKey) {
-      // Fallback to OpenAI
-      const openAiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${openAiApiKey}`
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          messages: [
-            { role: 'system', content: systemPrompt },
-            ...chatHistory,
-            { role: 'user', content: message }
-          ],
-          temperature: 0.7
-        })
-      });
-
-      if (!openAiResponse.ok) {
-        const errorText = await openAiResponse.text();
-        console.error('OpenAI API error response:', errorText);
-        return new Response(JSON.stringify({ error: 'OpenAI AI provider returned an error.' }), {
-          status: 502,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        });
-      }
-
-      const openAiData = await openAiResponse.json();
-      assistantReply = openAiData.choices?.[0]?.message?.content || "My apologies, sir. I seem to have lost my line of thought.";
-    } else {
-      return new Response(JSON.stringify({ error: 'Server Error: No AI API Key (GEMINI_API_KEY or OPENAI_API_KEY) is configured on the server.' }), {
+    if (!geminiApiKey) {
+      return new Response(JSON.stringify({ error: 'Server Error: GEMINI_API_KEY is not configured on the server.' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
+
+    let assistantReply = "";
+
+    // Use Gemini API from Google AI Studio
+    const geminiMessages = [
+      ...chatHistory.map(h => ({
+        role: h.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: h.content }]
+      })),
+      {
+        role: 'user',
+        parts: [{ text: message }]
+      }
+    ];
+
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        contents: geminiMessages,
+        systemInstruction: {
+          parts: [{ text: systemPrompt }]
+        },
+        generationConfig: {
+          temperature: 0.7
+        }
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Gemini API error response:', errorText);
+      return new Response(JSON.stringify({ error: 'Gemini AI provider returned an error.' }), {
+        status: 502,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    const geminiData = await response.json();
+    assistantReply = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || "My apologies, sir. I seem to have lost my line of thought.";
 
     // 6. Save messages to Database
     await supabaseService.from('ai_chat_messages').insert([

@@ -20,7 +20,7 @@
 | Frontend | React (Vite) + TypeScript |
 | Styling | Tailwind CSS + custom Batman theme tokens |
 | Backend | Supabase (Auth + PostgreSQL + Realtime) |
-| AI Integration | OpenAI API (`gpt-4o-mini`) — free tier compatible, routed through Supabase Edge Functions only |
+| AI Integration | Gemini API (`gemini-2.5-flash`) — free tier compatible, routed through Supabase Edge Functions only |
 | Charts | Recharts |
 | Animations | Framer Motion |
 | Icons | Custom SVG components (no emoji, no icon libraries) |
@@ -393,11 +393,11 @@ User tracks income and expenses across custom categories to understand spending 
 A free-form AI chat interface that analyzes all user data holistically and provides personalized suggestions, motivation, and coaching.
 
 ### AI Provider
-- **Model:** OpenAI `gpt-4o-mini` — free tier compatible, low cost per token
+- **Model:** Google Gemini `gemini-2.5-flash` — free tier compatible, Google AI Studio
 - **API Key:** Stored exclusively as a server-side environment variable in Supabase Edge Functions
-- **The OpenAI API key is NEVER sent to or accessible from the client/browser under any circumstances**
+- **The Gemini API key is NEVER sent to or accessible from the client/browser under any circumstances**
 - All AI calls are proxied through a Supabase Edge Function (`/functions/v1/ai-chat`)
-- The Edge Function validates the user's Supabase JWT before making any OpenAI call
+- The Edge Function validates the user's Supabase JWT before making any Gemini call
 - Rate limiting: maximum 20 AI requests per user per day (enforced in Edge Function)
 
 ### Features
@@ -514,7 +514,7 @@ Route: `/admin` — **completely hidden from the public UI. No link, no mention,
 This section is critical. All of the following must be implemented:
 
 ### API Key Protection
-- `OPENAI_API_KEY` lives exclusively in Supabase Edge Function environment variables
+- `GEMINI_API_KEY` lives exclusively in Supabase Edge Function environment variables
 - `SUPABASE_SERVICE_ROLE_KEY` lives exclusively in Supabase Edge Function environment variables
 - Neither key ever appears in the client bundle, `vite.config.ts`, or any `VITE_` prefixed variable
 - The frontend only holds `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` — both are safe to expose (Supabase anon key is designed to be public; RLS enforces data access)
@@ -570,7 +570,7 @@ This section is critical. All of the following must be implemented:
         { "key": "X-Content-Type-Options", "value": "nosniff" },
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
         { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
-        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src fonts.gstatic.com; img-src 'self' data:; connect-src 'self' *.supabase.co api.openai.com;" }
+        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src fonts.gstatic.com; img-src 'self' data:; connect-src 'self' *.supabase.co;" }
       ]
     }
   ]
