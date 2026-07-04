@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bat-black:        #0A0A0F;
+  --bat-dark:         #12121A;
+  --bat-surface:      #1C1C28;
+  --bat-border:       #2A2A3A;
+  --bat-gold:         #F5C518;
+  --bat-gold-dim:     #C49A10;
+  --bat-white:        #E8E8F0;
+  --bat-gray:         #8888A0;
+  --bat-danger:       #E84040;
+  --bat-success:      #40C870;
+  --bat-info:         #4080E8;
+}
+
+body {
+  background-color: var(--bat-black);
+  color: var(--bat-white);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bat-black);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bat-surface);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--bat-border);
+}
+
+/* Glassmorphism styling utilities */
+.bat-glass {
+  background: rgba(18, 18, 26, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--bat-border);
+}
+
+.bat-glow-gold {
+  box-shadow: 0 0 15px rgba(245, 197, 24, 0.15);
+}
+
+.bat-glow-gold:hover {
+  box-shadow: 0 0 25px rgba(245, 197, 24, 0.3);
+  border-color: var(--bat-gold);
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Recharts styling tweaks to fit dark mode */
+.recharts-tooltip-cursor {
+  fill: rgba(42, 42, 58, 0.3) !important;
+}
