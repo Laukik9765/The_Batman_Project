@@ -60,10 +60,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const content = (
     <div className="flex flex-col h-full bg-bat-dark border-r border-bat-border">
       {/* Brand logo */}
-      <div className="flex items-center gap-3 px-6 py-6 border-b border-bat-border">
+      <button
+        type="button"
+        onClick={() => handleItemClick('/dashboard')}
+        className="flex items-center gap-3 px-6 py-6 border-b border-bat-border w-full text-left hover:bg-bat-black hover:bg-opacity-25 transition-all focus:outline-none focus:ring-1 focus:ring-bat-gold focus:ring-inset"
+        aria-label="Go to Dashboard Mainframe"
+      >
         <span className="text-bat-gold animate-pulse"><BatIcon size={30} /></span>
         <span className="font-bebas text-2xl tracking-widest text-bat-gold">BATMAN PROJECT</span>
-      </div>
+      </button>
 
       {/* User Quick Info */}
       <div className="px-6 py-4 border-b border-bat-border bg-bat-black bg-opacity-30">
