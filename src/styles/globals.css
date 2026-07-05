@@ -18,6 +18,10 @@
   --bat-info:         #4080E8;
 }
 
+html {
+  font-size: 17.5px; /* Increased baseline font size for better readability across the site */
+}
+
 body {
   background-color: var(--bat-black);
   color: var(--bat-white);
@@ -26,6 +30,16 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
+  line-height: 1.6; /* Improved line-height for better text scanning and readability */
+}
+
+/* Map arbitrary pixel sizes to relative, responsive, and readable dimensions */
+.text-\[9px\] {
+  font-size: 0.72rem !important; /* Scaled to ~12.6px for accessibility */
+}
+
+.text-\[10px\] {
+  font-size: 0.78rem !important; /* Scaled to ~13.6px for accessibility */
 }
 
 /* Custom Scrollbars */
