@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS public.failure_reasons (
     source_type TEXT NOT NULL CHECK (source_type IN ('daily_task', 'goal_task', 'sleep')),
     source_id UUID NOT NULL,
     date DATE NOT NULL,
-    reason_text TEXT NOT NULL CHECK (char_length(reason_text) >= 10),
+    reason_text TEXT NOT NULL,
     analyzed BOOLEAN DEFAULT false NOT NULL,
     created_at TIMESTAMPTZ DEFAULT now()
 );

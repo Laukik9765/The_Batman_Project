@@ -105,8 +105,8 @@ export const DailyTasks: React.FC = () => {
 
   const handleFailureReasonSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!currentMissedTask || failureReasonText.trim().length < 10) {
-      addToast('Incident description must contain at least 10 characters.', 'danger');
+    if (!currentMissedTask || !failureReasonText.trim()) {
+      addToast('Incident description is required.', 'danger');
       return;
     }
 
@@ -248,7 +248,7 @@ export const DailyTasks: React.FC = () => {
               <form onSubmit={handleFailureReasonSubmit} className="space-y-4">
                 <div>
                   <label className="block text-xs font-bold text-bat-gray uppercase tracking-widest mb-1.5">
-                    What locked you back? (Required — min 10 characters)
+                    What locked you back? (Required)
                   </label>
                   <textarea
                     value={failureReasonText}
@@ -258,13 +258,13 @@ export const DailyTasks: React.FC = () => {
                     required
                   />
                   <div className="text-[10px] text-bat-gray font-mono text-right mt-1">
-                    {failureReasonText.length}/10 MIN CHARS
+                    {failureReasonText.length} characters
                   </div>
                 </div>
 
                 <button
                   type="submit"
-                  disabled={failureReasonText.length < 10}
+                  disabled={!failureReasonText.trim()}
                   className="w-full py-2.5 bg-bat-danger hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-bat-white font-bebas text-lg tracking-widest transition-colors rounded"
                 >
                   TRANSMIT INCIDENT REPORT

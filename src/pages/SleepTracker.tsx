@@ -142,8 +142,8 @@ export const SleepTracker: React.FC = () => {
 
   const handleDeviationSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (deviationReason.trim().length < 10) {
-      addToast('Please input a valid explanation (min 10 characters).', 'danger');
+    if (!deviationReason.trim()) {
+      addToast('Please input a valid explanation.', 'danger');
       return;
     }
 
@@ -228,7 +228,7 @@ export const SleepTracker: React.FC = () => {
               <form onSubmit={handleDeviationSubmit} className="space-y-4">
                 <div>
                   <label className="block text-xs font-bold text-bat-gray uppercase tracking-widest mb-1.5">
-                    What caused this sleep duration deviation? (Required — min 10 chars)
+                    What caused this sleep duration deviation? (Required)
                   </label>
                   <textarea
                     value={deviationReason}
@@ -238,13 +238,13 @@ export const SleepTracker: React.FC = () => {
                     required
                   />
                   <div className="text-[10px] text-bat-gray font-mono text-right mt-1">
-                    {deviationReason.length}/10 MIN CHARS
+                    {deviationReason.length} characters
                   </div>
                 </div>
 
                 <button
                   type="submit"
-                  disabled={deviationReason.length < 10}
+                  disabled={!deviationReason.trim()}
                   className="w-full py-2.5 bg-bat-gold hover:bg-bat-gold-dim text-bat-black font-bebas text-lg tracking-widest transition-colors rounded"
                 >
                   TRANSMIT EXPLANATION
