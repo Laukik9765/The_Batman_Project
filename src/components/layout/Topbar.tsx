@@ -25,7 +25,7 @@ export const Topbar: React.FC<TopbarProps> = ({
   onMenuToggle, 
   onNavigate 
 }) => {
-  const { weeklyReports, goals } = useAppStore();
+  const { weeklyReports, goals, dailyTasks, taskCompletions, profile } = useAppStore();
   const [notifications, setNotifications] = useState<InAppNotification[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
 
@@ -68,8 +68,38 @@ export const Topbar: React.FC<TopbarProps> = ({
       }
     });
 
+    // 3. Daily Checklist Incomplete Reminder
+    const reminderTimeStr = profile?.reminder_time || '20:00';
+    const [remHour, remMin] = reminderTimeStr.split(':').map(Number);
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+
+    // Show in-app warning if past/at reminder time
+    const timeReached = currentHour > remHour || (currentHour === remHour && currentMinute >= remMin);
+
+    if (timeReached) {
+      const activeTasks = dailyTasks.filter(t => t.is_active);
+      if (activeTasks.length > 0) {
+        const todayStr = now.toISOString().split('T')[0];
+        const completedTodayCount = taskCompletions.filter(
+          c => c.date === todayStr && c.completed
+        ).length;
+        const incompleteCount = activeTasks.length - completedTodayCount;
+
+        if (incompleteCount > 0) {
+          list.push({
+            id: 'daily-reminder-tasks',
+            title: 'Tactical Alert: Incomplete Checklist',
+            message: `Alfred: "Sir, you still have ${incompleteCount} incomplete daily checklist checkpoints."`,
+            type: 'deadline',
+            linkPath: '/daily-tasks'
+          });
+        }
+      }
+    }
+
     setNotifications(list);
-  }, [weeklyReports, goals]);
+  }, [weeklyReports, goals, dailyTasks, taskCompletions, profile]);
 
   const handleNotificationClick = (notif: InAppNotification) => {
     onNavigate(notif.linkPath);

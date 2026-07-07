@@ -9,6 +9,7 @@ import { PageWrapper } from './components/layout/PageWrapper';
 import { ToastContainer } from './components/ui/ToastContainer';
 import { QuickAddModals } from './components/layout/QuickAddModals';
 import { LoadingBat } from './components/animations/LoadingBat';
+import { startReminderEngine, stopReminderEngine } from './lib/reminderEngine';
 
 // Pages
 import { Login } from './pages/Login';
@@ -46,6 +47,18 @@ const AppContent: React.FC = () => {
     }, 1200);
     return () => clearTimeout(timer);
   }, []);
+
+  // Daily Tasks Reminder Background Engine Trigger
+  useEffect(() => {
+    if (user && profile?.reminder_enabled) {
+      startReminderEngine();
+    } else {
+      stopReminderEngine();
+    }
+    return () => {
+      stopReminderEngine();
+    };
+  }, [user, profile]);
 
   // Synchronize history popping (back/forward browser buttons)
   useEffect(() => {

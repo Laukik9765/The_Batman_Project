@@ -16,6 +16,8 @@ export interface Profile {
   onboarding_done: boolean;
   terms_accepted: boolean;
   terms_accepted_at: string | null;
+  reminder_enabled?: boolean;
+  reminder_time?: string;
 }
 
 export interface DailyTask {

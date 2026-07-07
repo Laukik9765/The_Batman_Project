@@ -9,7 +9,8 @@ import {
   UserIcon, 
   CheckIcon, 
   WarningIcon, 
-  TrashIcon 
+  TrashIcon,
+  BellIcon
 } from '../components/ui/Icons';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -21,6 +22,11 @@ export const Profile: React.FC = () => {
   const [timezone, setTimezone] = useState('UTC');
   const [saving, setSaving] = useState(false);
 
+  // Reminders states
+  const [reminderEnabled, setReminderEnabled] = useState(false);
+  const [reminderTime, setReminderTime] = useState('20:00');
+  const [savingReminders, setSavingReminders] = useState(false);
+
   // Account deletion states
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteConfirmationText, setDeleteConfirmationText] = useState('');
@@ -29,6 +35,8 @@ export const Profile: React.FC = () => {
     if (profile) {
       setFullName(profile.full_name || '');
       setTimezone(profile.timezone || 'UTC');
+      setReminderEnabled(profile.reminder_enabled || false);
+      setReminderTime(profile.reminder_time || '20:00');
     }
   }, [profile]);
 
@@ -59,6 +67,89 @@ export const Profile: React.FC = () => {
       addToast(e.message || 'Failed to update credentials record.', 'danger');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleToggleReminder = async (checked: boolean) => {
+    if (checked) {
+      if (!('Notification' in window)) {
+        addToast('Notifications are not supported by this browser.', 'danger');
+        return;
+      }
+      
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') {
+        addToast('Notification permission denied. Please enable it in browser settings.', 'danger');
+        setReminderEnabled(false);
+        return;
+      }
+    }
+    setReminderEnabled(checked);
+  };
+
+  const handleSaveReminders = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!profile) return;
+
+    setSavingReminders(true);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          reminder_enabled: reminderEnabled,
+          reminder_time: reminderTime
+        })
+        .eq('id', profile.id);
+
+      if (error) throw error;
+
+      setProfile({
+        ...profile,
+        reminder_enabled: reminderEnabled,
+        reminder_time: reminderTime
+      });
+      addToast('Tactical reminder protocols updated.', 'success');
+    } catch (err: any) {
+      console.error(err);
+      addToast(err.message || 'Failed to update reminder database record.', 'danger');
+    } finally {
+      setSavingReminders(false);
+    }
+  };
+
+  const handleSendTestNotification = () => {
+    if (!('Notification' in window)) {
+      addToast('Notifications are not supported by this browser.', 'danger');
+      return;
+    }
+
+    if (Notification.permission !== 'granted') {
+      addToast('Please authorize notification permissions first.', 'danger');
+      return;
+    }
+
+    try {
+      new Notification('Bat-Signal: Tactical Alert', {
+        body: 'Alfred: "Sir, this is a test of your daily checklist alert system. Complete all daily tasks."',
+        icon: '/favicon.svg'
+      });
+      addToast('Test signal transmitted successfully.', 'success');
+    } catch (err) {
+      console.error('Notification constructor error:', err);
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.ready.then((registration) => {
+          registration.showNotification('Bat-Signal: Tactical Alert', {
+            body: 'Alfred: "Sir, this is a test of your daily checklist alert system. Complete all daily tasks."',
+            icon: '/favicon.svg'
+          });
+          addToast('Test signal transmitted via Service Worker.', 'success');
+        }).catch((swErr) => {
+          console.error(swErr);
+          addToast('Failed to trigger notification.', 'danger');
+        });
+      } else {
+        addToast('Failed to trigger notification.', 'danger');
+      }
     }
   };
 
@@ -214,6 +305,66 @@ export const Profile: React.FC = () => {
         {/* Data Options (Right) */}
         <div className="space-y-6">
           
+          {/* Tactical Reminder Protocols Card */}
+          <div className="bat-glass p-6 rounded border-l-4 border-bat-gold flex flex-col justify-between">
+            <div>
+              <div className="flex items-center gap-2 text-bat-gold mb-3">
+                <BellIcon size={20} />
+                <h3 className="font-bebas text-xl tracking-wider">TACTICAL REMINDERS</h3>
+              </div>
+              <p className="text-[10px] text-bat-gray leading-relaxed mb-4 font-mono">
+                Alfred: "Sir, configure the daily alert system to verify that all Gotham defense checklist checkpoints are completed."
+              </p>
+              
+              <form onSubmit={handleSaveReminders} className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-bat-white font-bold uppercase tracking-wider font-mono">Enable Reminders</span>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      className="sr-only peer" 
+                      checked={reminderEnabled} 
+                      onChange={(e) => handleToggleReminder(e.target.checked)} 
+                    />
+                    <div className="w-9 h-5 bg-bat-black border border-bat-border rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-bat-gray peer-checked:after:bg-bat-gold after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-bat-gold peer-checked:bg-opacity-20 peer-checked:border-bat-gold"></div>
+                  </label>
+                </div>
+
+                {reminderEnabled && (
+                  <div>
+                    <label className="block text-[9px] font-bold text-bat-gray uppercase tracking-widest mb-1 font-mono">
+                      Daily Alert Time
+                    </label>
+                    <input
+                      type="time"
+                      value={reminderTime}
+                      onChange={(e) => setReminderTime(e.target.value)}
+                      className="w-full px-3 py-1.5 bg-bat-black border border-bat-border text-bat-white focus:outline-none focus:border-bat-gold rounded text-xs transition-colors font-mono"
+                      required
+                    />
+                  </div>
+                )}
+
+                <div className="flex gap-2 pt-2 font-mono">
+                  <button
+                    type="submit"
+                    disabled={savingReminders}
+                    className="flex-1 py-2 bg-bat-gold hover:bg-bat-gold-dim text-bat-black font-bold rounded transition-colors text-center text-[10px] uppercase font-bold"
+                  >
+                    {savingReminders ? 'SAVING...' : 'APPLY SETTINGS'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleSendTestNotification}
+                    className="py-2 px-3 bg-bat-black border border-bat-border hover:border-bat-gold text-bat-gold font-bold rounded transition-colors text-center text-[10px] uppercase font-bold"
+                  >
+                    TEST SIGNAL
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
           {/* Data Export Card */}
           <div className="bat-glass p-6 rounded flex flex-col justify-between h-48">
             <div>
