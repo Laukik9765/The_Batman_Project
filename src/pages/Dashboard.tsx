@@ -65,16 +65,15 @@ export const Dashboard: React.FC = () => {
     // Sleep last night (most recent log)
     const lastSleep = sleepLogs.length > 0 ? parseFloat(sleepLogs[0].duration_hours as any) : 0;
 
-    // Net finance today
-    const netToday = financeTransactions
-      .filter(t => t.transaction_date === todayStr)
+    // Net finance overall
+    const netTotal = financeTransactions
       .reduce((sum, t) => {
         const amt = parseFloat(t.amount as any);
         const isExp = t.finance_categories?.type === 'expense';
         return isExp ? sum - amt : sum + amt;
       }, 0);
 
-    const netFinanceStr = `${netToday >= 0 ? '+' : ''}₹${netToday.toFixed(2)}`;
+    const netFinanceStr = `${netTotal >= 0 ? '+' : ''}₹${netTotal.toFixed(2)}`;
 
     setStats({
       tasksDone: tasksDoneStr,
@@ -377,7 +376,7 @@ export const Dashboard: React.FC = () => {
               }`}>
                 {stats.netFinance}
               </span>
-              <span className="text-xs text-bat-gray font-mono block uppercase mt-1">NET BALANCE TODAY</span>
+              <span className="text-xs text-bat-gray font-mono block uppercase mt-1">TOTAL NET BALANCE</span>
             </div>
           </div>
 
