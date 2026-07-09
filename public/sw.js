@@ -21,12 +21,9 @@ self.addEventListener('fetch', (event) => {
   if (!event.request.url.startsWith('http')) return;
   
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-      return fetch(event.request).then((response) => {
-        // Cache new successful requests for later offline access
+    fetch(event.request)
+      .then((response) => {
+        // Cache new successful requests for offline access
         if (response && response.status === 200 && response.type === 'basic') {
           const responseToCache = response.clone();
           caches.open(CACHE_NAME).then((cache) => {
@@ -34,7 +31,10 @@ self.addEventListener('fetch', (event) => {
           });
         }
         return response;
-      });
-    })
+      })
+      .catch(() => {
+        // Fall back to cache if network is offline/unreachable
+        return caches.match(event.request);
+      })
   );
 });
