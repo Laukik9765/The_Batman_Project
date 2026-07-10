@@ -219,7 +219,7 @@ export const SideQuests: React.FC = () => {
                       </p>
 
                       {/* AI Action Trigger */}
-                      <div className="border-t border-bat-border pt-4 flex justify-between items-center gap-4">
+                      <div className="border-t border-bat-border pt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-4">
                         <span className="text-[10px] font-mono text-bat-gray uppercase">
                           DISPATCH ENCRYPTED ON {new Date(entry.created_at || entry.date).toLocaleDateString()}
                         </span>

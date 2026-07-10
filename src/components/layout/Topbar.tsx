@@ -129,7 +129,7 @@ export const Topbar: React.FC<TopbarProps> = ({
           </svg>
         </button>
 
-        <h2 className="font-bebas text-2xl text-bat-white tracking-widest uppercase">
+        <h2 className="font-bebas text-lg sm:text-2xl text-bat-white tracking-widest uppercase truncate max-w-[150px] xs:max-w-[250px] sm:max-w-none">
           {pageTitle}
         </h2>
       </div>

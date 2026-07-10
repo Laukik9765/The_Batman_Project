@@ -309,7 +309,7 @@ export const AdminPanel: React.FC = () => {
     <div className="min-height-100vh bg-bat-black text-bat-white font-mono text-xs">
       
       {/* Header bar */}
-      <header className="h-16 bg-bat-dark border-b border-bat-border flex justify-between items-center px-6 sticky top-0 z-30">
+      <header className="flex flex-col sm:flex-row justify-between items-center px-6 sticky top-0 z-30 bg-bat-dark border-b border-bat-border h-auto py-3 sm:py-0 sm:h-16 gap-3">
         <div className="flex items-center gap-3">
           <span className="text-bat-gold"><ShieldIcon size={24} /></span>
           <span className="font-bebas text-2xl tracking-widest text-bat-gold uppercase">GOTHAM CENTRAL MAINFRAME</span>
@@ -407,13 +407,13 @@ export const AdminPanel: React.FC = () => {
                 <thead>
                   <tr className="border-b border-bat-border text-bat-gray text-[10px] font-bold uppercase tracking-widest bg-bat-black">
                     <th className="p-3 cursor-pointer select-none" onClick={() => sortData('username')}>Codename</th>
-                    <th className="p-3 cursor-pointer select-none" onClick={() => sortData('email')}>Email</th>
-                    <th className="p-3 cursor-pointer select-none" onClick={() => sortData('created_at')}>Signup Date</th>
-                    <th className="p-3 cursor-pointer select-none" onClick={() => sortData('total_tasks')}>Habits</th>
+                    <th className="p-3 cursor-pointer select-none hidden sm:table-cell" onClick={() => sortData('email')}>Email</th>
+                    <th className="p-3 cursor-pointer select-none hidden md:table-cell" onClick={() => sortData('created_at')}>Signup Date</th>
+                    <th className="p-3 cursor-pointer select-none hidden md:table-cell" onClick={() => sortData('total_tasks')}>Habits</th>
                     <th className="p-3 cursor-pointer select-none" onClick={() => sortData('avg_completion')}>Completion %</th>
-                    <th className="p-3 cursor-pointer select-none" onClick={() => sortData('current_streak')}>Streak</th>
-                    <th className="p-3 cursor-pointer select-none" onClick={() => sortData('active_goals')}>Goals</th>
-                    <th className="p-3 cursor-pointer select-none" onClick={() => sortData('sleep_avg')}>Sleep Avg (7d)</th>
+                    <th className="p-3 cursor-pointer select-none hidden sm:table-cell" onClick={() => sortData('current_streak')}>Streak</th>
+                    <th className="p-3 cursor-pointer select-none hidden md:table-cell" onClick={() => sortData('active_goals')}>Goals</th>
+                    <th className="p-3 cursor-pointer select-none hidden md:table-cell" onClick={() => sortData('sleep_avg')}>Sleep Avg (7d)</th>
                     <th className="p-3">Actions</th>
                   </tr>
                 </thead>
@@ -427,13 +427,13 @@ export const AdminPanel: React.FC = () => {
                       <td className="p-3 font-semibold text-bat-white">
                         {u.username} {u.role === 'admin' && <span className="text-[8px] bg-bat-gold text-black px-1.5 py-0.5 rounded font-bold ml-1.5">ADMIN</span>}
                       </td>
-                      <td className="p-3 text-bat-gray">{u.email}</td>
-                      <td className="p-3 text-bat-gray">{new Date(u.created_at).toLocaleDateString()}</td>
-                      <td className="p-3 text-bat-white">{u.total_tasks}</td>
+                      <td className="p-3 text-bat-gray hidden sm:table-cell">{u.email}</td>
+                      <td className="p-3 text-bat-gray hidden md:table-cell">{new Date(u.created_at).toLocaleDateString()}</td>
+                      <td className="p-3 text-bat-white hidden md:table-cell">{u.total_tasks}</td>
                       <td className="p-3 text-bat-gold font-bold">{u.avg_completion}%</td>
-                      <td className="p-3 text-bat-white">{u.current_streak}</td>
-                      <td className="p-3 text-bat-white">{u.active_goals}</td>
-                      <td className="p-3 text-bat-white">{u.sleep_avg}h</td>
+                      <td className="p-3 text-bat-white hidden sm:table-cell">{u.current_streak}</td>
+                      <td className="p-3 text-bat-white hidden md:table-cell">{u.active_goals}</td>
+                      <td className="p-3 text-bat-white hidden md:table-cell">{u.sleep_avg}h</td>
                       <td className="p-3" onClick={(e) => e.stopPropagation()}>
                         <div className="flex gap-2">
                           <button
@@ -495,7 +495,7 @@ export const AdminPanel: React.FC = () => {
               {/* Close Button */}
               <button 
                 onClick={() => setDrillDownUser(null)} 
-                className="absolute left-6 top-6 text-bat-gray hover:text-bat-white"
+                className="absolute right-6 top-6 text-bat-gray hover:text-bat-white"
               >
                 <XIcon size={20} />
               </button>

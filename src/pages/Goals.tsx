@@ -257,7 +257,7 @@ export const Goals: React.FC = () => {
       </AnimatePresence>
 
       {/* Header section */}
-      <div className="flex justify-between items-center bg-bat-dark border border-bat-border p-4 rounded">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-bat-dark border border-bat-border p-4 rounded">
         <button
           onClick={() => {
             setShowAddGoal(true);
@@ -268,7 +268,7 @@ export const Goals: React.FC = () => {
           <PlusIcon size={16} />
           ESTABLISH OBJECTIVE
         </button>
-        <span className="text-xs font-mono text-bat-gray uppercase">
+        <span className="text-xs font-mono text-bat-gray uppercase text-center sm:text-right">
           STRATEGIC LONG-TERM OBJECTIVES: <span className="text-bat-white">{goals.length} ACTIVE</span>
         </span>
       </div>
@@ -365,7 +365,7 @@ export const Goals: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Goals List (Left side) */}
-        <div className={`space-y-4 ${selectedGoal ? 'lg:col-span-1' : 'lg:col-span-3'}`}>
+        <div className={`space-y-4 ${selectedGoal ? 'lg:col-span-1 hidden lg:block' : 'lg:col-span-3'}`}>
           <div className="bat-glass p-6 rounded">
             <h3 className="font-bebas text-xl text-bat-gold tracking-wider mb-6">LONG TERM OBJECTIVE INDEX</h3>
             

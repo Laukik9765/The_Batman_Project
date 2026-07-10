@@ -330,7 +330,7 @@ export const Dashboard: React.FC = () => {
         </div>
 
         {/* Quick Stats Grid */}
-        <div className="md:col-span-2 grid grid-cols-2 gap-4">
+        <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
           
           <div className="bat-glass p-5 rounded flex flex-col justify-between">
             <div>

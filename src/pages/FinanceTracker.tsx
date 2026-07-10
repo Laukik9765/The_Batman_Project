@@ -270,7 +270,7 @@ export const FinanceTracker: React.FC<{ onNavigate: (path: string) => void }> = 
       </AnimatePresence>
 
       {/* Header commands */}
-      <div className="flex justify-between items-center bg-bat-dark border border-bat-border p-4 rounded">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-bat-dark border border-bat-border p-4 rounded">
         <div className="flex gap-2">
           <button
             onClick={() => setShowAddCategory(true)}
@@ -281,7 +281,7 @@ export const FinanceTracker: React.FC<{ onNavigate: (path: string) => void }> = 
           </button>
         </div>
         <div className="flex items-center gap-4">
-          <div className="text-right">
+          <div className="text-center sm:text-right">
             <span className="text-[10px] text-bat-gray font-mono uppercase block">NET LIFETIME CASHFLOW</span>
             <span className={`text-xl font-bebas tracking-wide ${netBalance >= 0 ? 'text-bat-success' : 'text-bat-danger'}`}>
               {netBalance >= 0 ? '+' : ''}₹{netBalance.toFixed(2)}

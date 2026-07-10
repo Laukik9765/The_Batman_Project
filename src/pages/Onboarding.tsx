@@ -278,7 +278,7 @@ export const Onboarding: React.FC = () => {
                         placeholder="Habit description"
                       />
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-[10px] font-bold text-bat-gray uppercase tracking-widest mb-1">
                           Category
@@ -380,7 +380,7 @@ export const Onboarding: React.FC = () => {
                       />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-xs font-bold text-bat-gray uppercase tracking-widest mb-1">
                           Category

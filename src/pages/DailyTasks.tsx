@@ -276,8 +276,8 @@ export const DailyTasks: React.FC = () => {
       </AnimatePresence>
 
       {/* Header bar */}
-      <div className="flex justify-between items-center bg-bat-dark border border-bat-border p-4 rounded">
-        <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-bat-dark border border-bat-border p-4 rounded">
+        <div className="flex flex-wrap justify-center gap-2">
           <button
             onClick={() => setShowAddForm(true)}
             className="flex items-center gap-2 bg-bat-gold hover:bg-bat-gold-dim text-bat-black px-4 py-2 rounded font-bebas text-md tracking-wider transition-colors"
@@ -292,7 +292,7 @@ export const DailyTasks: React.FC = () => {
             COMPLETE ALL TODAY
           </button>
         </div>
-        <div className="text-xs font-mono text-bat-gray uppercase">
+        <div className="text-xs font-mono text-bat-gray uppercase text-center sm:text-right">
           OPERATIONAL TIME: <span className="text-bat-white">{todayStr}</span>
         </div>
       </div>
@@ -394,7 +394,7 @@ export const DailyTasks: React.FC = () => {
                   return (
                     <div 
                       key={task.id}
-                      className={`flex items-center justify-between p-4 rounded border transition-colors ${
+                      className={`flex flex-col sm:flex-row sm:items-center justify-between p-4 gap-3 rounded border transition-colors ${
                         done 
                           ? 'bg-bat-surface bg-opacity-35 border-bat-success border-opacity-40 text-bat-gray' 
                           : 'bg-bat-black border-bat-border text-bat-white'
@@ -447,9 +447,9 @@ export const DailyTasks: React.FC = () => {
                           </div>
                         )}
                       </div>
-
+ 
                       {/* Controls (Move up/down, Edit, Pause/Activate, Delete) */}
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center justify-end gap-2 w-full sm:w-auto border-t sm:border-t-0 border-bat-border pt-2 sm:pt-0">
                         <button
                           onClick={() => moveTask(idx, 'up')}
                           disabled={idx === 0}

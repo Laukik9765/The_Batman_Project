@@ -356,7 +356,7 @@ export const AIMentor: React.FC = () => {
           <div className="flex-1 flex flex-col md:flex-row min-h-0 bg-black bg-opacity-40 divide-y md:divide-y-0 md:divide-x divide-bat-border">
             
             {/* Left list pane */}
-            <div className="w-full md:w-80 overflow-y-auto no-scrollbar p-4 divide-y divide-bat-border flex-shrink-0">
+            <div className={`w-full md:w-80 overflow-y-auto no-scrollbar p-4 divide-y divide-bat-border flex-shrink-0 ${selectedReport ? 'hidden md:block' : ''}`}>
               <h3 className="font-bebas text-lg text-bat-gold tracking-wider mb-4 px-2 uppercase">REPORTS ARCHIVE</h3>
               
               {weeklyReports.length === 0 ? (
@@ -387,7 +387,7 @@ export const AIMentor: React.FC = () => {
             </div>
 
             {/* Right details reader pane */}
-            <div className="flex-grow overflow-y-auto no-scrollbar p-6 bg-bat-dark bg-opacity-10">
+            <div className={`flex-grow overflow-y-auto no-scrollbar p-6 bg-bat-dark bg-opacity-10 ${!selectedReport ? 'hidden md:block' : ''}`}>
               {selectedReport ? (
                 <div className="max-w-2xl mx-auto space-y-4">
                   <div className="flex justify-between items-center border-b border-bat-border pb-4">
