@@ -291,136 +291,154 @@ export const AIMentor: React.FC = () => {
       <div className="flex-grow flex min-h-0">
         
         {/* Chat Terminal panel */}
-        {activeTab === 'chat' && (
-          <div className="flex-1 flex flex-col min-h-0 bg-black bg-opacity-40">
-            {/* Scrollable messages log */}
-            <div 
-              ref={scrollRef}
-              className="flex-grow p-6 overflow-y-auto no-scrollbar space-y-4"
-            >
-              {chatMessages.length === 0 && (
-                <div className="h-full flex flex-col items-center justify-center text-center p-8">
-                  <div className="text-bat-gold mb-3 animate-pulse">
-                    <AIMentorIcon size={48} />
-                  </div>
-                  <h4 className="font-bebas text-xl text-bat-gold tracking-widest uppercase">
-                    Alfred Terminal Initiated
-                  </h4>
-                  <p className="text-xs font-mono text-bat-gray max-w-sm mt-1 leading-relaxed">
-                    Good day, sir. I have compiled your operational telemetry from all logs. Ask me any details regarding habits, sleep logs, goals, or finance ledgers.
-                  </p>
-                </div>
-              )}
+        {activeTab === 'chat' && (() => {
+          // Filter out daily motivation prompts and their corresponding replies
+          const filteredMessages = [];
+          for (let i = 0; i < chatMessages.length; i++) {
+            const msg = chatMessages[i];
+            if (
+              msg.role === 'user' &&
+              msg.content === "Generate a brief, 3-sentence daily motivation transmission starting with 'Good day, Master Bruce.' or similar, tailored to my stats."
+            ) {
+              if (i + 1 < chatMessages.length && chatMessages[i + 1].role === 'assistant') {
+                i++;
+              }
+              continue;
+            }
+            filteredMessages.push(msg);
+          }
 
-              {chatMessages.map((msg, index) => {
-                const isUser = msg.role === 'user';
-                const isLatest = index === chatMessages.length - 1;
-                
-                return (
-                  <div
-                    key={msg.id || index}
-                    className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}
-                  >
-                    <div 
-                      className={`max-w-xl p-4 rounded font-mono border ${
-                        isUser 
-                          ? 'bg-bat-dark border-bat-gold text-bat-gold shadow-[0_0_10px_rgba(245,197,24,0.1)]' 
-                          : 'bg-bat-surface border-bat-border text-bat-white shadow-lg'
-                      }`}
+          return (
+            <div className="flex-1 flex flex-col min-h-0 bg-black bg-opacity-40">
+              {/* Scrollable messages log */}
+              <div 
+                ref={scrollRef}
+                className="flex-grow p-6 overflow-y-auto no-scrollbar space-y-4"
+              >
+                {filteredMessages.length === 0 && (
+                  <div className="h-full flex flex-col items-center justify-center text-center p-8">
+                    <div className="text-bat-gold mb-3 animate-pulse">
+                      <AIMentorIcon size={48} />
+                    </div>
+                    <h4 className="font-bebas text-xl text-bat-gold tracking-widest uppercase">
+                      Alfred Terminal Initiated
+                    </h4>
+                    <p className="text-xs font-mono text-bat-gray max-w-sm mt-1 leading-relaxed">
+                      Good day, sir. I have compiled your operational telemetry from all logs. Ask me any details regarding habits, sleep logs, goals, or finance ledgers.
+                    </p>
+                  </div>
+                )}
+
+                {filteredMessages.map((msg, index) => {
+                  const isUser = msg.role === 'user';
+                  const isLatest = index === filteredMessages.length - 1;
+                  
+                  return (
+                    <div
+                      key={msg.id || index}
+                      className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}
                     >
-                      <div className="text-[9px] uppercase font-bold text-bat-gray mb-1.5 flex items-center justify-between">
-                        <span>{isUser ? 'SECURE_RECRUIT' : 'ALFRED_PENNYWORTH'}</span>
-                        <span>{new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                      </div>
-                                           {/* Typwriter text animation for Alfred's latest reply */}
-                      {!isUser && isLatest && typewriterMessagesToAnimate.has(msg.id) ? (
-                        <TypewriterText 
-                          text={msg.content} 
-                          isStopped={stopResponseRequested}
-                          onComplete={() => {
-                            typewriterMessagesToAnimate.delete(msg.id);
-                            setIsGenerating(false);
-                          }}
-                          onStop={(finalText) => {
-                            typewriterMessagesToAnimate.delete(msg.id);
-                            updateChatMessage(msg.id, finalText);
-                            setIsGenerating(false);
-                            setStopResponseRequested(false);
-                          }}
-                        />
-                      ) : (
-                        <div className="text-xs leading-relaxed whitespace-pre-wrap">
-                          {parseMarkdown(msg.content)}
+                      <div 
+                        className={`max-w-xl p-4 rounded font-mono border ${
+                          isUser 
+                            ? 'bg-bat-dark border-bat-gold text-bat-gold shadow-[0_0_10px_rgba(245,197,24,0.1)]' 
+                            : 'bg-bat-surface border-bat-border text-bat-white shadow-lg'
+                        }`}
+                      >
+                        <div className="text-[9px] uppercase font-bold text-bat-gray mb-1.5 flex items-center justify-between">
+                          <span>{isUser ? 'SECURE_RECRUIT' : 'ALFRED_PENNYWORTH'}</span>
+                          <span>{new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                         </div>
-                      )}
+                        {/* Typwriter text animation for Alfred's latest reply */}
+                        {!isUser && isLatest && typewriterMessagesToAnimate.has(msg.id) ? (
+                          <TypewriterText 
+                            text={msg.content} 
+                            isStopped={stopResponseRequested}
+                            onComplete={() => {
+                              typewriterMessagesToAnimate.delete(msg.id);
+                              setIsGenerating(false);
+                            }}
+                            onStop={(finalText) => {
+                              typewriterMessagesToAnimate.delete(msg.id);
+                              updateChatMessage(msg.id, finalText);
+                              setIsGenerating(false);
+                              setStopResponseRequested(false);
+                            }}
+                          />
+                        ) : (
+                          <div className="text-xs leading-relaxed whitespace-pre-wrap">
+                            {parseMarkdown(msg.content)}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {/* Pulsing Loading dots */}
+                {loading && (
+                  <div className="flex justify-start">
+                    <div className="bg-bat-surface border border-bat-border p-4 rounded shadow-lg flex items-center gap-2">
+                      <span className="text-[9px] uppercase font-bold text-bat-gray font-mono">ALFRED_THINKING</span>
+                      <div className="flex gap-1.5">
+                        <span className="w-1.5 h-1.5 bg-bat-gold rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                        <span className="w-1.5 h-1.5 bg-bat-gold rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                        <span className="w-1.5 h-1.5 bg-bat-gold rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                      </div>
                     </div>
                   </div>
-                );
-              })}
+                )}
+              </div>
 
-              {/* Pulsing Loading dots */}
-              {loading && (
-                <div className="flex justify-start">
-                  <div className="bg-bat-surface border border-bat-border p-4 rounded shadow-lg flex items-center gap-2">
-                    <span className="text-[9px] uppercase font-bold text-bat-gray font-mono">ALFRED_THINKING</span>
-                    <div className="flex gap-1.5">
-                      <span className="w-1.5 h-1.5 bg-bat-gold rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                      <span className="w-1.5 h-1.5 bg-bat-gold rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                      <span className="w-1.5 h-1.5 bg-bat-gold rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                    </div>
-                  </div>
-                </div>
-              )}
+              {/* Quick-action suggested chip prompts */}
+              <div className="px-6 py-2 border-t border-bat-border flex gap-1.5 overflow-x-auto no-scrollbar bg-bat-black bg-opacity-30">
+                {SUGGESTED_CHIPS.map((chip) => (
+                  <button
+                    key={chip}
+                    onClick={() => handleSendMessage(chip)}
+                    disabled={isGenerating}
+                    className="flex-shrink-0 text-[10px] font-mono font-bold bg-bat-dark border border-bat-border text-bat-gold hover:border-bat-gold px-3 py-1 rounded transition-colors uppercase disabled:opacity-50"
+                  >
+                    {chip}
+                  </button>
+                ))}
+              </div>
+
+              {/* Input Form */}
+              <form 
+                onSubmit={handleSubmitForm}
+                className="p-4 bg-bat-dark border-t border-bat-border flex gap-3 h-16 flex-shrink-0"
+              >
+                <input
+                  type="text"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  disabled={loading}
+                  className="flex-grow bg-bat-black border border-bat-border text-bat-white focus:outline-none focus:border-bat-gold rounded px-4 py-2 font-mono text-xs disabled:opacity-70"
+                  placeholder={loading ? "Alfred is processing operational data..." : isGenerating ? "Alfred is formulating response..." : "Transmit message to Alfred..."}
+                />
+                {isGenerating ? (
+                  <button
+                    type="button"
+                    onClick={handleStopResponse}
+                    className="bg-bat-danger hover:opacity-90 text-bat-white font-bebas px-6 rounded text-md tracking-wider transition-colors flex items-center justify-center gap-2"
+                  >
+                    <span className="w-2.5 h-2.5 bg-bat-white rounded-sm" />
+                    STOP
+                  </button>
+                ) : (
+                  <button
+                    type="submit"
+                    disabled={!inputValue.trim()}
+                    className="bg-bat-gold hover:bg-bat-gold-dim disabled:opacity-50 text-bat-black font-bebas px-6 rounded text-md tracking-wider transition-colors"
+                  >
+                    TRANSMIT
+                  </button>
+                )}
+              </form>
             </div>
-
-            {/* Quick-action suggested chip prompts */}
-            <div className="px-6 py-2 border-t border-bat-border flex gap-1.5 overflow-x-auto no-scrollbar bg-bat-black bg-opacity-30">
-              {SUGGESTED_CHIPS.map((chip) => (
-                <button
-                  key={chip}
-                  onClick={() => handleSendMessage(chip)}
-                  disabled={isGenerating}
-                  className="flex-shrink-0 text-[10px] font-mono font-bold bg-bat-dark border border-bat-border text-bat-gold hover:border-bat-gold px-3 py-1 rounded transition-colors uppercase disabled:opacity-50"
-                >
-                  {chip}
-                </button>
-              ))}
-            </div>
-
-            {/* Input Form */}
-            <form 
-              onSubmit={handleSubmitForm}
-              className="p-4 bg-bat-dark border-t border-bat-border flex gap-3 h-16 flex-shrink-0"
-            >
-              <input
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                disabled={loading}
-                className="flex-grow bg-bat-black border border-bat-border text-bat-white focus:outline-none focus:border-bat-gold rounded px-4 py-2 font-mono text-xs disabled:opacity-70"
-                placeholder={loading ? "Alfred is processing operational data..." : isGenerating ? "Alfred is formulating response..." : "Transmit message to Alfred..."}
-              />
-              {isGenerating ? (
-                <button
-                  type="button"
-                  onClick={handleStopResponse}
-                  className="bg-bat-danger hover:opacity-90 text-bat-white font-bebas px-6 rounded text-md tracking-wider transition-colors flex items-center justify-center gap-2"
-                >
-                  <span className="w-2.5 h-2.5 bg-bat-white rounded-sm" />
-                  STOP
-                </button>
-              ) : (
-                <button
-                  type="submit"
-                  disabled={!inputValue.trim()}
-                  className="bg-bat-gold hover:bg-bat-gold-dim disabled:opacity-50 text-bat-black font-bebas px-6 rounded text-md tracking-wider transition-colors"
-                >
-                  TRANSMIT
-                </button>
-              )}
-            </form>
-          </div>
-        )}
+          );
+        })()}
 
         {/* Weekly reports history view */}
         {activeTab === 'reports' && (
