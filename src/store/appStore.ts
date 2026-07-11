@@ -201,6 +201,7 @@ interface AppState {
 
   // AI Chat Actions
   addChatMessage: (role: 'user' | 'assistant', content: string) => AIChatMessage;
+  updateChatMessage: (id: string, content: string) => void;
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -671,5 +672,13 @@ export const useAppStore = create<AppState>((set, get) => ({
     };
     set((state) => ({ chatMessages: [...state.chatMessages, newMessage] }));
     return newMessage;
+  },
+
+  updateChatMessage: (id, content) => {
+    set((state) => ({
+      chatMessages: state.chatMessages.map((msg) =>
+        msg.id === id ? { ...msg, content } : msg
+      ),
+    }));
   },
 }));

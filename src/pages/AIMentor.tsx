@@ -92,16 +92,33 @@ const parseMarkdown = (text: string) => {
 // Persistent cache of message IDs that should play the typewriter animation in the current session
 const typewriterMessagesToAnimate = new Set<string>();
 
-const TypewriterText: React.FC<{ text: string; onComplete?: () => void }> = ({ text, onComplete }) => {
+const TypewriterText: React.FC<{ 
+  text: string; 
+  isStopped?: boolean;
+  onComplete?: () => void; 
+  onStop?: (currentText: string) => void;
+}> = ({ text, isStopped, onComplete, onStop }) => {
   const [displayedText, setDisplayedText] = useState('');
   const textRef = useRef(text);
   const onCompleteRef = useRef(onComplete);
+  const onStopRef = useRef(onStop);
 
   useEffect(() => {
     onCompleteRef.current = onComplete;
-  }, [onComplete]);
+    onStopRef.current = onStop;
+  }, [onComplete, onStop]);
 
   useEffect(() => {
+    if (isStopped) {
+      if (onStopRef.current) {
+        onStopRef.current(displayedText);
+      }
+    }
+  }, [isStopped, displayedText]);
+
+  useEffect(() => {
+    if (isStopped) return;
+
     textRef.current = text;
     let i = 0;
     setDisplayedText('');
@@ -120,7 +137,7 @@ const TypewriterText: React.FC<{ text: string; onComplete?: () => void }> = ({ t
     }, 15);
 
     return () => clearInterval(interval);
-  }, [text]);
+  }, [text, isStopped]);
 
   return <div className="whitespace-pre-wrap">{parseMarkdown(displayedText)}</div>;
 };
@@ -130,6 +147,7 @@ export const AIMentor: React.FC = () => {
     chatMessages, 
     weeklyReports, 
     addChatMessage, 
+    updateChatMessage,
     addToast,
     profile,
     dailyTasks,
@@ -146,6 +164,9 @@ export const AIMentor: React.FC = () => {
   // Chat state
   const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [stopResponseRequested, setStopResponseRequested] = useState(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Selected report state
@@ -158,13 +179,30 @@ export const AIMentor: React.FC = () => {
     }
   }, [chatMessages, loading]);
 
+  const handleStopResponse = () => {
+    if (loading) {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      setLoading(false);
+      setIsGenerating(false);
+    } else if (isGenerating) {
+      setStopResponseRequested(true);
+    }
+  };
+
   const handleSendMessage = async (textToSend: string) => {
-    if (!textToSend.trim() || loading) return;
+    if (!textToSend.trim() || isGenerating) return;
     
     // 1. Add user message locally
     addChatMessage('user', textToSend);
     setInputValue('');
     setLoading(true);
+    setIsGenerating(true);
+    setStopResponseRequested(false);
+
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
 
     try {
       // 2. Call Edge Function AI chat proxy
@@ -175,6 +213,7 @@ export const AIMentor: React.FC = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${session?.access_token}`,
         },
+        signal: controller.signal,
         body: JSON.stringify({ 
           message: textToSend
         }),
@@ -182,6 +221,8 @@ export const AIMentor: React.FC = () => {
 
       const result = await response.json();
       
+      if (controller.signal.aborted) return;
+
       if (response.ok && result.reply) {
         // 3. Add Alfred response locally
         const assistantMsg = addChatMessage('assistant', result.reply);
@@ -191,12 +232,22 @@ export const AIMentor: React.FC = () => {
         typewriterMessagesToAnimate.add(assistantMsg.id);
         addToast(result.error || 'Signal disrupted.', 'danger');
       }
-    } catch (err) {
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        console.log('AI response fetch aborted by user.');
+        addChatMessage('assistant', '*Transmission terminated by secure recruit.*');
+        setIsGenerating(false);
+        setLoading(false);
+        return;
+      }
       console.error('Edge Function unreachable:', err);
       const assistantMsg = addChatMessage('assistant', "My apologies, sir. Connection to the proxy server has been lost. Please verify your internet connection or check if the backend service is offline.");
       typewriterMessagesToAnimate.add(assistantMsg.id);
       addToast('Proxy gateway error.', 'danger');
     } finally {
+      if (abortControllerRef.current === controller) {
+        abortControllerRef.current = null;
+      }
       setLoading(false);
     }
   };
@@ -281,12 +332,21 @@ export const AIMentor: React.FC = () => {
                         <span>{isUser ? 'SECURE_RECRUIT' : 'ALFRED_PENNYWORTH'}</span>
                         <span>{new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                       </div>
-                      
-                      {/* Typwriter text animation for Alfred's latest reply */}
+                                           {/* Typwriter text animation for Alfred's latest reply */}
                       {!isUser && isLatest && typewriterMessagesToAnimate.has(msg.id) ? (
                         <TypewriterText 
                           text={msg.content} 
-                          onComplete={() => typewriterMessagesToAnimate.delete(msg.id)}
+                          isStopped={stopResponseRequested}
+                          onComplete={() => {
+                            typewriterMessagesToAnimate.delete(msg.id);
+                            setIsGenerating(false);
+                          }}
+                          onStop={(finalText) => {
+                            typewriterMessagesToAnimate.delete(msg.id);
+                            updateChatMessage(msg.id, finalText);
+                            setIsGenerating(false);
+                            setStopResponseRequested(false);
+                          }}
                         />
                       ) : (
                         <div className="text-xs leading-relaxed whitespace-pre-wrap">
@@ -319,7 +379,7 @@ export const AIMentor: React.FC = () => {
                 <button
                   key={chip}
                   onClick={() => handleSendMessage(chip)}
-                  disabled={loading}
+                  disabled={isGenerating}
                   className="flex-shrink-0 text-[10px] font-mono font-bold bg-bat-dark border border-bat-border text-bat-gold hover:border-bat-gold px-3 py-1 rounded transition-colors uppercase disabled:opacity-50"
                 >
                   {chip}
@@ -338,15 +398,26 @@ export const AIMentor: React.FC = () => {
                 onChange={(e) => setInputValue(e.target.value)}
                 disabled={loading}
                 className="flex-grow bg-bat-black border border-bat-border text-bat-white focus:outline-none focus:border-bat-gold rounded px-4 py-2 font-mono text-xs disabled:opacity-70"
-                placeholder={loading ? "Alfred is processing operational data..." : "Transmit message to Alfred..."}
+                placeholder={loading ? "Alfred is processing operational data..." : isGenerating ? "Alfred is formulating response..." : "Transmit message to Alfred..."}
               />
-              <button
-                type="submit"
-                disabled={loading || !inputValue.trim()}
-                className="bg-bat-gold hover:bg-bat-gold-dim disabled:opacity-50 text-bat-black font-bebas px-6 rounded text-md tracking-wider transition-colors"
-              >
-                TRANSMIT
-              </button>
+              {isGenerating ? (
+                <button
+                  type="button"
+                  onClick={handleStopResponse}
+                  className="bg-bat-danger hover:opacity-90 text-bat-white font-bebas px-6 rounded text-md tracking-wider transition-colors flex items-center justify-center gap-2"
+                >
+                  <span className="w-2.5 h-2.5 bg-bat-white rounded-sm" />
+                  STOP
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  disabled={!inputValue.trim()}
+                  className="bg-bat-gold hover:bg-bat-gold-dim disabled:opacity-50 text-bat-black font-bebas px-6 rounded text-md tracking-wider transition-colors"
+                >
+                  TRANSMIT
+                </button>
+              )}
             </form>
           </div>
         )}
