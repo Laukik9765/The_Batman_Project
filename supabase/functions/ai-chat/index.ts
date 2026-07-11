@@ -83,7 +83,7 @@ Deno.serve(async (req) => {
 
     // Parse input message
     const body = await req.json();
-    const { message, customContext, localGeminiApiKey } = body;
+    const { message, customContext, localGeminiApiKey, skipHistory } = body;
     if (!message || typeof message !== 'string') {
       return new Response(JSON.stringify({ error: 'Bad Request: Missing message parameter' }), {
         status: 400,
@@ -312,10 +312,12 @@ ${customContext || 'None'}
     assistantReply = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || "My apologies, sir. I seem to have lost my line of thought.";
 
     // 6. Save messages to Database
-    await supabaseService.from('ai_chat_messages').insert([
-      { user_id: userId, role: 'user', content: message },
-      { user_id: userId, role: 'assistant', content: assistantReply }
-    ]);
+    if (!skipHistory) {
+      await supabaseService.from('ai_chat_messages').insert([
+        { user_id: userId, role: 'user', content: message },
+        { user_id: userId, role: 'assistant', content: assistantReply }
+      ]);
+    }
 
     // Return the response
     return new Response(JSON.stringify({ reply: assistantReply }), {

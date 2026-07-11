@@ -209,7 +209,8 @@ export const Dashboard: React.FC = () => {
           },
           body: JSON.stringify({
             message: "Generate a brief, 3-sentence daily motivation transmission starting with 'Good day, Master Bruce.' or similar, tailored to my stats.",
-            customContext: "Provide a quick daily transmission from Alfred for my dashboard banner. Keep it under 60 words."
+            customContext: "Provide a quick daily transmission from Alfred for my dashboard banner. Keep it under 60 words.",
+            skipHistory: true
           }),
         });
 
