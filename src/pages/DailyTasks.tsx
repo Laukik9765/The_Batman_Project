@@ -13,6 +13,11 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from 'recharts';
 
+const MONTH_NAMES = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
+
 export const DailyTasks: React.FC = () => {
   const {
     dailyTasks,
@@ -27,6 +32,36 @@ export const DailyTasks: React.FC = () => {
   } = useAppStore();
 
   const [todayStr] = useState(() => new Date().toISOString().split('T')[0]);
+
+  // Heatmap date navigation state
+  const [heatmapYear, setHeatmapYear] = useState(() => new Date().getFullYear());
+  const [heatmapMonth, setHeatmapMonth] = useState(() => new Date().getMonth());
+
+  const handlePrevMonth = () => {
+    if (heatmapMonth === 0) {
+      setHeatmapMonth(11);
+      setHeatmapYear(prev => prev - 1);
+    } else {
+      setHeatmapMonth(prev => prev - 1);
+    }
+  };
+
+  const handleNextMonth = () => {
+    if (heatmapMonth === 11) {
+      setHeatmapMonth(0);
+      setHeatmapYear(prev => prev + 1);
+    } else {
+      setHeatmapMonth(prev => prev + 1);
+    }
+  };
+
+  const handlePrevYear = () => {
+    setHeatmapYear(prev => prev - 1);
+  };
+
+  const handleNextYear = () => {
+    setHeatmapYear(prev => prev + 1);
+  };
 
   // Form states
   const [showAddForm, setShowAddForm] = useState(false);
@@ -183,19 +218,20 @@ export const DailyTasks: React.FC = () => {
     };
   });
 
-  // 3. Calendar heatmap computation (current month)
-  const getDaysInMonth = () => {
-    const d = new Date();
-    return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+  // 3. Calendar heatmap computation
+  const getDaysInMonth = (year: number, month: number) => {
+    return new Date(year, month + 1, 0).getDate();
   };
 
   const getHeatmapGrid = () => {
-    const days = getDaysInMonth();
+    const days = getDaysInMonth(heatmapYear, heatmapMonth);
     const grid = [];
     const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     
     for (let day = 1; day <= days; day++) {
-      const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const dateStr = `${heatmapYear}-${String(heatmapMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const cellDate = new Date(heatmapYear, heatmapMonth, day);
       
       // Calculate tasks status for this date
       const activeTasksOnDate = dailyTasks.filter(t => {
@@ -207,7 +243,7 @@ export const DailyTasks: React.FC = () => {
       
       let status: 'gold' | 'gray' | 'red' | 'empty' = 'empty';
       
-      if (new Date(dateStr) > now) {
+      if (cellDate > today) {
         status = 'empty';
       } else if (activeTasksOnDate.length > 0) {
         const rate = completionsOnDate.length / activeTasksOnDate.length;
@@ -222,6 +258,7 @@ export const DailyTasks: React.FC = () => {
   };
 
   const heatmapGrid = getHeatmapGrid();
+  const firstDayIndex = new Date(heatmapYear, heatmapMonth, 1).getDay();
 
   return (
     <div className="space-y-6">
@@ -501,10 +538,63 @@ export const DailyTasks: React.FC = () => {
 
           {/* Calendar Heatmap grid */}
           <div className="bat-glass p-6 rounded">
-            <h3 className="font-bebas text-xl text-bat-gold tracking-wider mb-4">MONTHLY COMPLETION HEATMAP</h3>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+              <h3 className="font-bebas text-xl text-bat-gold tracking-wider">MONTHLY COMPLETION HEATMAP</h3>
+              
+              {/* Heatmap Navigation Controls */}
+              <div className="flex items-center gap-1.5 font-mono text-xs">
+                {/* Year backward */}
+                <button
+                  type="button"
+                  onClick={handlePrevYear}
+                  className="px-2 py-1 bg-bat-dark border border-bat-border hover:border-bat-gold text-bat-gray hover:text-bat-gold rounded transition-all font-bold"
+                  title="Previous Year"
+                >
+                  &lt;&lt;
+                </button>
+                {/* Month backward */}
+                <button
+                  type="button"
+                  onClick={handlePrevMonth}
+                  className="px-2.5 py-1 bg-bat-dark border border-bat-border hover:border-bat-gold text-bat-gray hover:text-bat-gold rounded transition-all font-bold"
+                  title="Previous Month"
+                >
+                  &lt;
+                </button>
+                
+                {/* Selected Month & Year */}
+                <span className="px-3 py-1 bg-bat-surface border border-bat-border rounded text-bat-white font-bold min-w-[120px] text-center select-none uppercase text-[11px] tracking-wide">
+                  {MONTH_NAMES[heatmapMonth]} {heatmapYear}
+                </span>
+                
+                {/* Month forward */}
+                <button
+                  type="button"
+                  onClick={handleNextMonth}
+                  className="px-2.5 py-1 bg-bat-dark border border-bat-border hover:border-bat-gold text-bat-gray hover:text-bat-gold rounded transition-all font-bold"
+                  title="Next Month"
+                >
+                  &gt;
+                </button>
+                {/* Year forward */}
+                <button
+                  type="button"
+                  onClick={handleNextYear}
+                  className="px-2 py-1 bg-bat-dark border border-bat-border hover:border-bat-gold text-bat-gray hover:text-bat-gold rounded transition-all font-bold"
+                  title="Next Year"
+                >
+                  &gt;&gt;
+                </button>
+              </div>
+            </div>
+
             <div className="grid grid-cols-7 gap-2 max-w-md mx-auto">
               {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, idx) => (
                 <div key={idx} className="text-center text-xs font-mono font-bold text-bat-gray">{day}</div>
+              ))}
+              {/* Empty padding cells to align weekdays correctly */}
+              {Array.from({ length: firstDayIndex }).map((_, idx) => (
+                <div key={`empty-${idx}`} className="h-8" />
               ))}
               {heatmapGrid.map((dayGrid) => {
                 let cellColor = 'bg-bat-black border-bat-border';
