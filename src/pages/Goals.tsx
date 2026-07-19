@@ -83,7 +83,7 @@ export const Goals: React.FC = () => {
   const handleCreateGoal = (e: React.FormEvent) => {
     e.preventDefault();
     if (!goalName.trim() || !targetDate) {
-      addToast('Objective name and target date are required parameters.', 'danger');
+      addToast('Goal name and target date are required.', 'danger');
       return;
     }
     addGoal(goalName, goalCategory, targetDate, motivation);
@@ -103,7 +103,7 @@ export const Goals: React.FC = () => {
   const handleFailureReasonSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!currentMissedTask || !failureReasonText.trim()) {
-      addToast('Please input a valid explanation.', 'danger');
+      addToast('Please enter a reason.', 'danger');
       return;
     }
 
@@ -139,7 +139,7 @@ export const Goals: React.FC = () => {
           'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
         },
         body: JSON.stringify({
-          message: "Provide a comprehensive Objective Analysis Report styled as Alfred for my goal. Include progress analysis, pacing estimation, adjustment suggestions, and a motivational closing referencing my motivations.",
+          message: "Provide a comprehensive Goal Analysis Report styled as Alfred for my goal. Include progress analysis, pacing estimation, adjustment suggestions, and a motivational closing referencing my motivations.",
           customContext: context
         }),
       });
@@ -147,13 +147,13 @@ export const Goals: React.FC = () => {
       const result = await response.json();
       if (response.ok && result.reply) {
         setAiReport(result.reply);
-        addToast('Alfred analysis compiled successfully.', 'success');
+        addToast('Alfred goal analysis completed successfully.', 'success');
       } else {
-        setAiReport("Apologies, sir. The satellite connection was interrupted, and I could not verify pacing statistics.");
+        setAiReport("Apologies, sir. Unable to fetch goal analysis right now.");
       }
     } catch (e) {
       console.error(e);
-      setAiReport("System error. Failed to compile Pacings and Adjustments report.");
+      setAiReport("Failed to generate goal report.");
     } finally {
       setLoadingReport(false);
     }
@@ -199,8 +199,8 @@ export const Goals: React.FC = () => {
 
   // Pie Chart: completed vs missed
   const pieData = [
-    { name: 'Completed Checkpoints', value: detailCompletedCount },
-    { name: 'Missed Checkpoints', value: detailMissedCount }
+    { name: 'Completed Sub-goals', value: detailCompletedCount },
+    { name: 'Missed Sub-goals', value: detailMissedCount }
   ];
   const PIE_COLORS = ['#F5C518', '#E84040']; // Gold, Danger
 
@@ -219,23 +219,23 @@ export const Goals: React.FC = () => {
             >
               <div className="flex items-center gap-2 text-bat-danger mb-4">
                 <WarningIcon size={24} />
-                <h3 className="font-bebas text-2xl tracking-wider">OBJECTIVE CHECKPOINT MISSED</h3>
+                <h3 className="font-bebas text-2xl tracking-wider">MISSED SUB-GOAL STEP</h3>
               </div>
               
               <p className="text-sm text-bat-white leading-relaxed mb-4">
-                You didn't complete the objective task <span className="text-bat-gold font-bold">"{currentMissedTask.name}"</span> yesterday ({yesterdayStr}).
+                You didn't complete the goal step <span className="text-bat-gold font-bold">"{currentMissedTask.name}"</span> yesterday ({yesterdayStr}).
               </p>
               
               <form onSubmit={handleFailureReasonSubmit} className="space-y-4">
                 <div>
                   <label className="block text-xs font-bold text-bat-gray uppercase tracking-widest mb-1.5">
-                    What locked you back? (Required)
+                    What held you back? (Required)
                   </label>
                   <textarea
                     value={failureReasonText}
                     onChange={(e) => setFailureReasonText(e.target.value)}
                     className="w-full px-4 py-2.5 bg-bat-black border border-bat-border text-bat-white focus:outline-none focus:border-bat-gold rounded text-sm transition-colors h-24 resize-none"
-                    placeholder="Provide a briefing of the issue..."
+                    placeholder="Explain what delayed this step..."
                     required
                   />
                   <div className="text-[10px] text-bat-gray font-mono text-right mt-1">
@@ -248,7 +248,7 @@ export const Goals: React.FC = () => {
                   disabled={!failureReasonText.trim()}
                   className="w-full py-2.5 bg-bat-danger hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-bat-white font-bebas text-lg tracking-widest transition-colors rounded"
                 >
-                  LOG INCIDENT REPORT
+                  SAVE REFLECTION
                 </button>
               </form>
             </motion.div>
@@ -266,10 +266,10 @@ export const Goals: React.FC = () => {
           className="flex items-center gap-2 bg-bat-gold hover:bg-bat-gold-dim text-bat-black px-4 py-2 rounded font-bebas text-md tracking-wider transition-colors"
         >
           <PlusIcon size={16} />
-          ESTABLISH OBJECTIVE
+          CREATE NEW GOAL
         </button>
         <span className="text-xs font-mono text-bat-gray uppercase text-center sm:text-right">
-          STRATEGIC LONG-TERM OBJECTIVES: <span className="text-bat-white">{goals.length} ACTIVE</span>
+          ACTIVE GOALS: <span className="text-bat-white">{goals.length} ACTIVE</span>
         </span>
       </div>
 
@@ -284,7 +284,7 @@ export const Goals: React.FC = () => {
               className="bg-bat-dark border border-bat-border p-6 rounded shadow-[0_4px_30px_rgba(0,0,0,0.8)] w-full max-w-md bat-glow-gold"
             >
               <div className="flex justify-between items-center pb-4 border-b border-bat-border mb-4">
-                <span className="font-bebas text-xl text-bat-gold tracking-wider">ESTABLISH STRATEGIC GOAL</span>
+                <span className="font-bebas text-xl text-bat-gold tracking-wider">CREATE NEW GOAL</span>
                 <button onClick={() => setShowAddGoal(false)} className="text-bat-gray hover:text-bat-white">
                   <XIcon size={18} />
                 </button>
@@ -293,14 +293,14 @@ export const Goals: React.FC = () => {
               <form onSubmit={handleCreateGoal} className="space-y-4">
                 <div>
                   <label className="block text-xs font-bold text-bat-gray uppercase tracking-widest mb-1">
-                    Goal / Objective Name
+                    Goal Name
                   </label>
                   <input
                     type="text"
                     value={goalName}
                     onChange={(e) => setGoalName(e.target.value)}
                     className="w-full px-4 py-2 bg-bat-black border border-bat-border text-bat-white focus:outline-none focus:border-bat-gold rounded text-sm transition-colors"
-                    placeholder="e.g. Master Wayne's investments portfolio"
+                    placeholder="e.g. Save $5,000 for emergency fund"
                     required
                   />
                 </div>
@@ -339,13 +339,13 @@ export const Goals: React.FC = () => {
 
                 <div>
                   <label className="block text-xs font-bold text-bat-gray uppercase tracking-widest mb-1">
-                    Motivation Statement
+                    Motivation / Why
                   </label>
                   <textarea
                     value={motivation}
                     onChange={(e) => setMotivation(e.target.value)}
                     className="w-full px-4 py-2 bg-bat-black border border-bat-border text-bat-white focus:outline-none focus:border-bat-gold rounded text-sm transition-colors h-20 resize-none"
-                    placeholder="Explain why achieving this objective is critical..."
+                    placeholder="Explain why achieving this goal is important to you..."
                   />
                 </div>
 
@@ -353,7 +353,7 @@ export const Goals: React.FC = () => {
                   type="submit"
                   className="w-full py-2 bg-bat-gold hover:bg-bat-gold-dim text-bat-black font-bebas text-lg tracking-widest transition-colors rounded"
                 >
-                  SAVE OBJECTIVE
+                  SAVE GOAL
                 </button>
               </form>
             </motion.div>
@@ -367,11 +367,11 @@ export const Goals: React.FC = () => {
         {/* Goals List (Left side) */}
         <div className={`space-y-4 ${selectedGoal ? 'lg:col-span-1 hidden lg:block' : 'lg:col-span-3'}`}>
           <div className="bat-glass p-6 rounded">
-            <h3 className="font-bebas text-xl text-bat-gold tracking-wider mb-6">LONG TERM OBJECTIVE INDEX</h3>
+            <h3 className="font-bebas text-xl text-bat-gold tracking-wider mb-6">YOUR GOALS</h3>
             
             {goals.length === 0 ? (
               <div className="p-8 text-center text-xs text-bat-gray font-mono uppercase border border-dashed border-bat-border rounded">
-                NO ACTIVE GOALS DETECTED.
+                NO ACTIVE GOALS FOUND. ADD A GOAL ABOVE TO GET STARTED.
               </div>
             ) : (
               <div className="space-y-4">
@@ -448,20 +448,20 @@ export const Goals: React.FC = () => {
                 <XIcon size={18} />
               </button>
 
-              <span className="text-xs font-mono text-bat-gold uppercase">OBJECTIVE DASHBOARD</span>
+              <span className="text-xs font-mono text-bat-gold uppercase">GOAL DETAILS</span>
               <h2 className="font-bebas text-3xl text-bat-white tracking-wider mt-1">{selectedGoal.name}</h2>
               <p className="text-sm text-bat-gray font-mono mt-1 uppercase">Target Date: {selectedGoal.target_date}</p>
 
               {selectedGoal.motivation && (
                 <div className="bg-bat-black p-4 border border-bat-border mt-4 rounded">
-                  <span className="text-[10px] font-mono text-bat-gold uppercase block mb-1">STRATEGIC RATIONALE / "WHY"</span>
+                  <span className="text-[10px] font-mono text-bat-gold uppercase block mb-1">MOTIVATION / WHY</span>
                   <p className="text-xs italic text-bat-white leading-relaxed">"{selectedGoal.motivation}"</p>
                 </div>
               )}
 
               {/* Sub-tasks Section */}
               <div className="mt-6 border-t border-bat-border pt-6">
-                <h3 className="font-bebas text-lg text-bat-gold tracking-wide mb-4">TACTICAL LINKED TASKS</h3>
+                <h3 className="font-bebas text-lg text-bat-gold tracking-wide mb-4">LINKED HABITS & STEPS</h3>
                 
                 <form onSubmit={handleAddSubTask} className="flex gap-2 mb-4">
                   <input
@@ -469,20 +469,20 @@ export const Goals: React.FC = () => {
                     value={newSubTaskName}
                     onChange={(e) => setNewSubTaskName(e.target.value)}
                     className="flex-grow px-3 py-2 bg-bat-black border border-bat-border text-bat-white focus:outline-none focus:border-bat-gold rounded text-xs transition-colors"
-                    placeholder="Define linked habit/sub-task..."
+                    placeholder="Add a sub-goal or step..."
                     required
                   />
                   <button
                     type="submit"
                     className="bg-bat-gold hover:bg-bat-gold-dim text-bat-black font-bebas px-4 py-2 rounded text-xs tracking-wider uppercase transition-colors"
                   >
-                    LINK
+                    ADD
                   </button>
                 </form>
 
                 {detailTasks.length === 0 ? (
                   <div className="text-xs text-bat-gray font-mono uppercase p-4 border border-dashed border-bat-border text-center rounded">
-                    NO LINKED SUB-TASKS DEFINED.
+                    NO LINKED SUB-GOALS DEFINED.
                   </div>
                 ) : (
                   <div className="space-y-2">
@@ -518,7 +518,7 @@ export const Goals: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* completions pie */}
               <div className="bat-glass p-6 rounded flex flex-col items-center">
-                <h3 className="font-bebas text-lg text-bat-gold tracking-wide mb-4">CHECKPOINT ANALYSIS</h3>
+                <h3 className="font-bebas text-lg text-bat-gold tracking-wide mb-4">PROGRESS ANALYSIS</h3>
                 {detailTasks.length === 0 ? (
                   <div className="py-8 text-xs text-bat-gray font-mono uppercase text-center">NO SUB-TASKS DEFINED</div>
                 ) : (
@@ -553,7 +553,7 @@ export const Goals: React.FC = () => {
 
               {/* completion over time line chart */}
               <div className="bat-glass p-6 rounded">
-                <h3 className="font-bebas text-lg text-bat-gold tracking-wide mb-4">RETENTION PACING</h3>
+                <h3 className="font-bebas text-lg text-bat-gold tracking-wide mb-4">COMPLETION PACING</h3>
                 {lineChartData.length === 0 ? (
                   <div className="py-8 text-xs text-bat-gray font-mono uppercase text-center">NO COMPLETIONS LOGGED</div>
                 ) : (
@@ -581,14 +581,14 @@ export const Goals: React.FC = () => {
               </div>
               <div className="flex justify-between items-center mb-4">
                 <span className="font-bebas text-lg text-bat-gold tracking-wide flex items-center gap-2">
-                  ALFRED PACING & PROJECTION
+                  ALFRED'S GOAL PACING & ANALYSIS
                 </span>
                 <button
                   onClick={() => handleGenerateAIReport(selectedGoal)}
                   disabled={loadingReport}
                   className="bg-bat-black border border-bat-border text-bat-gold hover:border-bat-gold text-xs font-mono px-3 py-1.5 rounded transition-all"
                 >
-                  {loadingReport ? 'ANALYZING TELEMETRY...' : 'COMPILE ANALYSIS'}
+                  {loadingReport ? 'GENERATING INSIGHTS...' : "GET ALFRED'S ADVICE"}
                 </button>
               </div>
 
@@ -598,7 +598,7 @@ export const Goals: React.FC = () => {
                 </div>
               ) : (
                 <div className="p-8 text-center text-xs text-bat-gray font-mono uppercase border border-dashed border-bat-border rounded bg-bat-black bg-opacity-30">
-                  {loadingReport ? 'Alfred is calculating pacing metrics...' : 'NO ACTIVE REPORT. PRESS BUTTON ABOVE TO DECRYPT.'}
+                  {loadingReport ? 'Alfred is analyzing your goal progress...' : "CLICK BUTTON ABOVE FOR ALFRED'S ANALYSIS."}
                 </div>
               )}
             </div>

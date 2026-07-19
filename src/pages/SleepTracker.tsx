@@ -130,11 +130,11 @@ export const SleepTracker: React.FC = () => {
         setPendingSleepLogId(loggedItem?.id || 'temp-id');
         setShowDeviationModal(true);
       } else {
-        addToast('Sleep telemetry encrypted.', 'success');
+        addToast('Sleep log saved.', 'success');
       }
     } catch (err) {
       console.error(err);
-      addToast('Failed to save sleep telemetry.', 'danger');
+      addToast('Failed to save sleep log.', 'danger');
     } finally {
       setSubmitting(false);
     }
@@ -143,7 +143,7 @@ export const SleepTracker: React.FC = () => {
   const handleDeviationSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!deviationReason.trim()) {
-      addToast('Please input a valid explanation.', 'danger');
+      addToast('Please enter a reason.', 'danger');
       return;
     }
 
@@ -154,7 +154,7 @@ export const SleepTracker: React.FC = () => {
     setShowDeviationModal(false);
     setDeviationReason('');
     setPendingSleepLogId(null);
-    addToast('Deviation telemetry logged in files.', 'success');
+    addToast('Sleep note saved.', 'success');
   };
 
   const handleTriggerSleepAnalysis = async () => {
@@ -181,13 +181,13 @@ export const SleepTracker: React.FC = () => {
       const result = await response.json();
       if (response.ok && result.reply) {
         setAiAnalysis(result.reply);
-        addToast('Alfred sleep analysis decrypted.', 'success');
+        addToast('Alfred sleep analysis completed.', 'success');
       } else {
-        setAiAnalysis("Sir, I could not finalize the sleep patterns extraction. Confirm connection beacons.");
+        setAiAnalysis("Sir, I could not finalize the sleep analysis at this time.");
       }
     } catch (e) {
       console.error(e);
-      setAiAnalysis("Network anomaly. Sleep analysis aborted.");
+      setAiAnalysis("Failed to generate sleep analysis.");
     } finally {
       setLoadingAnalysis(false);
     }
@@ -198,7 +198,7 @@ export const SleepTracker: React.FC = () => {
     .slice(0, 30)
     .reverse()
     .map(log => ({
-      date: log.date.substring(5), // MM-DD format
+      date: log.date.split('-').slice(1).join('/'),
       duration: parseFloat(log.duration_hours as any),
       quality: log.quality_rating
     }));
@@ -206,7 +206,7 @@ export const SleepTracker: React.FC = () => {
   return (
     <div className="space-y-6">
       
-      {/* Deviation Explanation Modal */}
+      {/* Out-of-bounds Sleep Deviation reason modal */}
       <AnimatePresence>
         {showDeviationModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 backdrop-blur-sm p-4">
@@ -218,23 +218,23 @@ export const SleepTracker: React.FC = () => {
             >
               <div className="flex items-center gap-2 text-bat-gold mb-4">
                 <WarningIcon size={24} />
-                <h3 className="font-bebas text-2xl tracking-wider">SLEEP DEVIATION DETECTED</h3>
+                <h3 className="font-bebas text-2xl tracking-wider">UNUSUAL SLEEP DURATION</h3>
               </div>
               
               <p className="text-sm text-bat-white leading-relaxed mb-4">
-                You logged <span className="text-bat-gold font-bold">{deviationHours} hours</span> of sleep, which is outside the recommended 6–10 hour envelope.
+                You logged <span className="text-bat-gold font-bold">{deviationHours} hours</span> of sleep, which is outside the recommended 6–10 hour range.
               </p>
               
               <form onSubmit={handleDeviationSubmit} className="space-y-4">
                 <div>
                   <label className="block text-xs font-bold text-bat-gray uppercase tracking-widest mb-1.5">
-                    What caused this sleep duration deviation? (Required)
+                    What affected your sleep duration? (Required)
                   </label>
                   <textarea
                     value={deviationReason}
                     onChange={(e) => setDeviationReason(e.target.value)}
                     className="w-full px-4 py-2.5 bg-bat-black border border-bat-border text-bat-white focus:outline-none focus:border-bat-gold rounded text-sm transition-colors h-24 resize-none"
-                    placeholder="e.g. Gotham City security breach forced all-night operations..."
+                    placeholder="e.g. Late work deadline, traveling, or trouble sleeping..."
                     required
                   />
                   <div className="text-[10px] text-bat-gray font-mono text-right mt-1">
@@ -247,7 +247,7 @@ export const SleepTracker: React.FC = () => {
                   disabled={!deviationReason.trim()}
                   className="w-full py-2.5 bg-bat-gold hover:bg-bat-gold-dim text-bat-black font-bebas text-lg tracking-widest transition-colors rounded"
                 >
-                  TRANSMIT EXPLANATION
+                  SAVE REASON
                 </button>
               </form>
             </motion.div>
@@ -262,7 +262,7 @@ export const SleepTracker: React.FC = () => {
           <div className="bat-glass p-6 rounded">
             <div className="flex items-center gap-2 text-bat-gold mb-6 border-b border-bat-border pb-3">
               <SleepIcon size={24} />
-              <h3 className="font-bebas text-2xl tracking-wider">LOG SLEEP PATTERN</h3>
+              <h3 className="font-bebas text-2xl tracking-wider">LOG SLEEP</h3>
             </div>
 
             <form onSubmit={handleSleepSubmit} className="space-y-4">
@@ -404,7 +404,7 @@ export const SleepTracker: React.FC = () => {
               {/* Bat quality rating */}
               <div>
                 <label className="block text-xs font-bold text-bat-gray uppercase tracking-widest mb-2">
-                  Recuperation Quality
+                  Sleep Quality
                 </label>
                 <div className="flex gap-2">
                   {[1, 2, 3, 4, 5].map((val) => (
@@ -432,7 +432,7 @@ export const SleepTracker: React.FC = () => {
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   className="w-full px-4 py-2 bg-bat-black border border-bat-border text-bat-white focus:outline-none focus:border-bat-gold rounded text-xs transition-colors h-20 resize-none font-mono"
-                  placeholder="Record mental state post sleep..."
+                  placeholder="Record how you feel after waking up..."
                 />
               </div>
 
@@ -441,7 +441,7 @@ export const SleepTracker: React.FC = () => {
                 disabled={submitting}
                 className="w-full py-2.5 bg-bat-gold hover:bg-bat-gold-dim text-bat-black font-bebas text-lg tracking-widest transition-colors rounded uppercase"
               >
-                {submitting ? 'RECORDING TELEMETRY...' : 'LOG SLEEP PATTERN'}
+                {submitting ? 'SAVING SLEEP LOG...' : 'SAVE SLEEP LOG'}
               </button>
             </form>
           </div>
@@ -531,9 +531,9 @@ export const SleepTracker: React.FC = () => {
             {/* AI analysis card */}
             <div className="bat-glass p-6 rounded flex flex-col justify-between">
               <div>
-                <h3 className="font-bebas text-lg text-bat-gold tracking-wide mb-4">RECUPERATION DIAGNOSTICS</h3>
+                <h3 className="font-bebas text-lg text-bat-gold tracking-wide mb-4">SLEEP INSIGHTS</h3>
                 <p className="text-xs text-bat-gray leading-normal mb-4 font-mono">
-                  Alfred can audit sleep logs to identify schedule anomalies and suggest changes.
+                  Alfred can analyze your sleep patterns to suggest healthier sleep schedules.
                 </p>
               </div>
               <button
@@ -542,7 +542,7 @@ export const SleepTracker: React.FC = () => {
                 className="w-full py-2 bg-bat-dark border border-bat-border hover:border-bat-gold text-bat-gold font-mono text-xs rounded transition-all flex items-center justify-center gap-2"
               >
                 <AIMentorIcon size={14} />
-                {loadingAnalysis ? 'AUDITING CYCLES...' : 'DECRYPT SLEEP TRENDS'}
+                {loadingAnalysis ? 'ANALYZING SLEEP...' : "GET ALFRED'S SLEEP ANALYSIS"}
               </button>
             </div>
 
@@ -559,7 +559,7 @@ export const SleepTracker: React.FC = () => {
               >
                 <div className="flex items-center gap-2 text-bat-gold mb-3">
                   <AIMentorIcon size={18} />
-                  <span className="font-bebas text-lg tracking-wider">ALFRED'S TELEMETRY BRIEFING</span>
+                  <span className="font-bebas text-lg tracking-wider">ALFRED'S SLEEP ANALYSIS</span>
                 </div>
                 <p className="text-xs font-mono text-bat-white leading-relaxed whitespace-pre-wrap">
                   {aiAnalysis}

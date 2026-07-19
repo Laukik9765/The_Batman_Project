@@ -161,7 +161,7 @@ export const QuickAddModals: React.FC<QuickAddModalsProps> = ({
                   value={taskName}
                   onChange={(e) => setTaskName(e.target.value)}
                   className="w-full px-3 py-2 bg-bat-black border border-bat-border text-bat-white focus:outline-none focus:border-bat-gold rounded text-xs"
-                  placeholder="e.g. Meditate in Batcave"
+                  placeholder="e.g. Morning Meditation"
                   required
                   autoFocus
                 />

@@ -34,9 +34,9 @@ export const Onboarding: React.FC = () => {
 
   // Step 2 State (3 Initial Tasks)
   const [tasks, setTasks] = useState<OnboardingTask[]>([
-    { name: '100 pushups & squats', category: 'Health', est_minutes: 20 },
-    { name: 'Read case file logs', category: 'Mind', est_minutes: 30 },
-    { name: 'Patrol Gotham streets', category: 'Personal', est_minutes: 60 }
+    { name: 'Morning Exercise', category: 'Health', est_minutes: 20 },
+    { name: '30 Minutes Reading', category: 'Mind', est_minutes: 30 },
+    { name: 'Daily Planning', category: 'Personal', est_minutes: 15 }
   ]);
 
   // Step 3 State (Optional first goal)
@@ -69,7 +69,7 @@ export const Onboarding: React.FC = () => {
   const handleNextStep = () => {
     if (step === 1) {
       if (!fullName.trim()) {
-        addToast('Please enter your name, sir. Gotham needs to address you.', 'danger');
+        addToast('Please enter your name.', 'danger');
         return;
       }
     }
@@ -77,7 +77,7 @@ export const Onboarding: React.FC = () => {
       // Validate that at least 3 tasks are defined and have names
       const invalid = tasks.some(t => !t.name.trim());
       if (invalid) {
-        addToast('Please define all 3 daily habits to establish system logic.', 'danger');
+        addToast('Please define all 3 daily habits.', 'danger');
         return;
       }
     }
@@ -147,7 +147,7 @@ export const Onboarding: React.FC = () => {
 
       // Re-fetch store data and reload profile
       await fetchUserData(user.id);
-      addToast('Onboarding sequence successful. Database synchronized.', 'success');
+      addToast('Onboarding completed successfully!', 'success');
 
       // Update state to trigger redirect in router
       if (profile) {
@@ -173,7 +173,7 @@ export const Onboarding: React.FC = () => {
         <div className="flex items-center justify-between border-b border-bat-border pb-6 mb-8">
           <div className="flex items-center gap-3">
             <span className="text-bat-gold"><BatIcon size={32} /></span>
-            <span className="font-bebas text-2xl tracking-wider text-bat-gold">SYSTEM SETUP IN PROGRESS</span>
+            <span className="font-bebas text-2xl tracking-wider text-bat-gold">WELCOME ONBOARDING</span>
           </div>
           <div className="flex gap-2">
             {[1, 2, 3].map((s) => (
@@ -200,10 +200,10 @@ export const Onboarding: React.FC = () => {
             >
               <div className="flex items-center gap-3 text-bat-gold">
                 <UserIcon size={24} />
-                <h2 className="font-bebas text-2xl tracking-wider">STEP 1 — CHOOSE YOUR CODENAME</h2>
+                <h2 className="font-bebas text-2xl tracking-wider">STEP 1 — YOUR PROFILE</h2>
               </div>
               <p className="text-sm text-bat-gray">
-                Welcome, recruit. Please input your identity metrics. Your timezone is critical to calculating daily checklist expirations (resets occur at 11:59 PM in your selected timezone).
+                Welcome! Please enter your name and timezone. Daily resets occur at 11:59 PM in your selected timezone.
               </p>
 
               <div>
@@ -215,13 +215,13 @@ export const Onboarding: React.FC = () => {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   className="w-full px-4 py-3 bg-bat-black border border-bat-border text-bat-white focus:outline-none focus:border-bat-gold rounded text-sm transition-colors"
-                  placeholder="e.g. Bruce Wayne or Detective"
+                  placeholder="e.g. Alex Smith"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-bat-gray uppercase tracking-widest mb-2">
-                  Operational Timezone
+                  Timezone
                 </label>
                 <select
                   value={timezone}
@@ -242,7 +242,7 @@ export const Onboarding: React.FC = () => {
                   onClick={handleNextStep}
                   className="px-6 py-2.5 bg-bat-gold hover:bg-bat-gold-dim text-bat-black font-bebas text-md tracking-wider transition-colors rounded"
                 >
-                  CONTINUE TO PROTOCOLS
+                  CONTINUE TO HABITS
                 </button>
               </div>
             </motion.div>
@@ -262,7 +262,7 @@ export const Onboarding: React.FC = () => {
                 <h2 className="font-bebas text-2xl tracking-wider">STEP 2 — DEFINE THREE DAILY HABITS</h2>
               </div>
               <p className="text-sm text-bat-gray">
-                A vigilante is defined by self-discipline. Define your first three core habits. These will appear on your checklist every day.
+                Building strong habits leads to success. Define your first three core daily habits below.
               </p>
 
               <div className="space-y-4">
@@ -340,10 +340,10 @@ export const Onboarding: React.FC = () => {
             >
               <div className="flex items-center gap-3 text-bat-gold">
                 <GoalsIcon size={24} />
-                <h2 className="font-bebas text-2xl tracking-wider">STEP 3 — DEFINE A LONG-TERM OBJECTIVE</h2>
+                <h2 className="font-bebas text-2xl tracking-wider">STEP 3 — DEFINE A LONG-TERM GOAL</h2>
               </div>
               <p className="text-sm text-bat-gray">
-                A crusader needs a vision. Set a long-term goal to track. (This is optional and can be skipped).
+                Set a long-term goal to stay motivated. (This step is optional).
               </p>
 
               <div className="flex items-center gap-2 mb-4">

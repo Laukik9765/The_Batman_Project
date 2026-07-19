@@ -141,7 +141,7 @@ export const DailyTasks: React.FC = () => {
   const handleFailureReasonSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!currentMissedTask || !failureReasonText.trim()) {
-      addToast('Incident description is required.', 'danger');
+      addToast('Please enter a reason for missing this habit.', 'danger');
       return;
     }
 
@@ -167,7 +167,7 @@ export const DailyTasks: React.FC = () => {
         await toggleTaskCompletion(t.id, todayStr, true);
       }
     }
-    addToast('All tactical checkpoints completed.', 'success');
+    addToast('All habits marked as complete.', 'success');
   };
 
   // Reordering helpers
@@ -275,7 +275,7 @@ export const DailyTasks: React.FC = () => {
             >
               <div className="flex items-center gap-2 text-bat-danger mb-4">
                 <WarningIcon size={24} />
-                <h3 className="font-bebas text-2xl tracking-wider">INCIDENT BRIEFING</h3>
+                <h3 className="font-bebas text-2xl tracking-wider">MISSED HABIT REFLECTION</h3>
               </div>
               
               <p className="text-sm text-bat-white leading-relaxed mb-4">
@@ -285,13 +285,13 @@ export const DailyTasks: React.FC = () => {
               <form onSubmit={handleFailureReasonSubmit} className="space-y-4">
                 <div>
                   <label className="block text-xs font-bold text-bat-gray uppercase tracking-widest mb-1.5">
-                    What locked you back? (Required)
+                    What held you back? (Required)
                   </label>
                   <textarea
                     value={failureReasonText}
                     onChange={(e) => setFailureReasonText(e.target.value)}
                     className="w-full px-4 py-2.5 bg-bat-black border border-bat-border text-bat-white focus:outline-none focus:border-bat-gold rounded text-sm transition-colors h-24 resize-none"
-                    placeholder="e.g. Returned late from patrol, encountered unexpected resistance."
+                    placeholder="e.g. Busy schedule, felt tired, or forgot to schedule time."
                     required
                   />
                   <div className="text-[10px] text-bat-gray font-mono text-right mt-1">
@@ -304,7 +304,7 @@ export const DailyTasks: React.FC = () => {
                   disabled={!failureReasonText.trim()}
                   className="w-full py-2.5 bg-bat-danger hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-bat-white font-bebas text-lg tracking-widest transition-colors rounded"
                 >
-                  TRANSMIT INCIDENT REPORT
+                  SAVE REFLECTION
                 </button>
               </form>
             </motion.div>
@@ -320,7 +320,7 @@ export const DailyTasks: React.FC = () => {
             className="flex items-center gap-2 bg-bat-gold hover:bg-bat-gold-dim text-bat-black px-4 py-2 rounded font-bebas text-md tracking-wider transition-colors"
           >
             <PlusIcon size={16} />
-            DEFINE HABIT
+            ADD NEW HABIT
           </button>
           <button
             onClick={handleCompleteAll}
@@ -330,7 +330,7 @@ export const DailyTasks: React.FC = () => {
           </button>
         </div>
         <div className="text-xs font-mono text-bat-gray uppercase text-center sm:text-right">
-          OPERATIONAL TIME: <span className="text-bat-white">{todayStr}</span>
+          TODAY'S DATE: <span className="text-bat-white">{todayStr}</span>
         </div>
       </div>
 
@@ -345,7 +345,7 @@ export const DailyTasks: React.FC = () => {
               className="bg-bat-dark border border-bat-border p-6 rounded shadow-[0_4px_30px_rgba(0,0,0,0.8)] w-full max-w-md bat-glow-gold"
             >
               <div className="flex justify-between items-center pb-4 border-b border-bat-border mb-4">
-                <span className="font-bebas text-xl text-bat-gold tracking-wider">DEFINE PROTOCOL HABIT</span>
+                <span className="font-bebas text-xl text-bat-gold tracking-wider">CREATE NEW HABIT</span>
                 <button onClick={() => setShowAddForm(false)} className="text-bat-gray hover:text-bat-white">
                   <XIcon size={18} />
                 </button>
@@ -361,7 +361,7 @@ export const DailyTasks: React.FC = () => {
                     value={taskName}
                     onChange={(e) => setTaskName(e.target.value)}
                     className="w-full px-4 py-2 bg-bat-black border border-bat-border text-bat-white focus:outline-none focus:border-bat-gold rounded text-sm transition-colors"
-                    placeholder="e.g. Master Wayne's physical fitness routines"
+                    placeholder="e.g. 30-minute workout or reading session"
                     required
                   />
                 </div>
@@ -401,7 +401,7 @@ export const DailyTasks: React.FC = () => {
                   type="submit"
                   className="w-full py-2 bg-bat-gold hover:bg-bat-gold-dim text-bat-black font-bebas text-lg tracking-widest transition-colors rounded"
                 >
-                  SAVE PROTOCOL
+                  SAVE HABIT
                 </button>
               </form>
             </motion.div>
@@ -415,11 +415,11 @@ export const DailyTasks: React.FC = () => {
         {/* Habit List Table */}
         <div className="lg:col-span-2 space-y-4">
           <div className="bat-glass p-6 rounded">
-            <h3 className="font-bebas text-xl text-bat-gold tracking-wider mb-4">TODAY'S TACTICAL CHECKLIST</h3>
+            <h3 className="font-bebas text-xl text-bat-gold tracking-wider mb-4">TODAY'S HABITS</h3>
             
             {dailyTasks.length === 0 ? (
               <div className="p-8 text-center text-xs text-bat-gray font-mono uppercase border border-dashed border-bat-border rounded">
-                NO ACTIVE HABITS DEFINED. INITIALIZE PROTOCOLS ABOVE.
+                NO ACTIVE HABITS DEFINED. ADD A HABIT ABOVE TO GET STARTED.
               </div>
             ) : (
               <div className="space-y-3">

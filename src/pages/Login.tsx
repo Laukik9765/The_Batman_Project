@@ -211,7 +211,7 @@ export const Login: React.FC = () => {
                 className="accent-bat-gold rounded"
               />
               <label htmlFor="remember" className="text-xs text-bat-gray">
-                Remember terminal session
+                Remember me
               </label>
             </div>
 
@@ -220,13 +220,13 @@ export const Login: React.FC = () => {
               disabled={submitting}
               className="w-full py-3 mt-4 bg-bat-gold hover:bg-bat-gold-dim text-bat-black font-bebas text-lg tracking-widest transition-colors rounded shadow-[0_0_10px_rgba(245,197,24,0.1)] flex items-center justify-center"
             >
-              {submitting ? 'SYNCHRONIZING TELEMETRY...' : 'INITIATE TERMINAL DECRYPT'}
+              {submitting ? 'LOGGING IN...' : 'LOG IN'}
             </button>
           </form>
         )}
 
         <div className="mt-8 text-center text-xs">
-          <span className="text-bat-gray">New recruit? </span>
+          <span className="text-bat-gray">Don't have an account? </span>
           <a href="/signup" className="text-bat-gold hover:underline font-semibold">
             CREATE ACCOUNT
           </a>

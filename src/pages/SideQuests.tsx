@@ -43,7 +43,7 @@ export const SideQuests: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!content.trim()) {
-      addToast('Cannot encrypt an empty journal dispatch.', 'danger');
+      addToast('Cannot save an empty journal entry.', 'danger');
       return;
     }
     setSubmitting(true);
@@ -72,13 +72,13 @@ export const SideQuests: React.FC = () => {
       const result = await response.json();
       if (response.ok && result.reply) {
         setAnalyses(prev => ({ ...prev, [entry.id]: result.reply }));
-        addToast('Alfred briefing compiled.', 'success');
+        addToast('Alfred analysis completed.', 'success');
       } else {
-        addToast('Connection failure. Alfred is offline.', 'danger');
+        addToast('Unable to connect to Alfred.', 'danger');
       }
     } catch (e) {
       console.error(e);
-      addToast('Failed to contact mentor proxy.', 'danger');
+      addToast('Failed to process request with Alfred.', 'danger');
     } finally {
       setLoadingAnalyses(prev => ({ ...prev, [entry.id]: false }));
     }
@@ -94,13 +94,13 @@ export const SideQuests: React.FC = () => {
           <div className="bat-glass p-6 rounded sticky top-20">
             <div className="flex items-center gap-2 text-bat-gold mb-6 border-b border-bat-border pb-3">
               <SideQuestsIcon size={24} />
-              <h3 className="font-bebas text-2xl tracking-wider">LOG SIDE QUEST</h3>
+              <h3 className="font-bebas text-2xl tracking-wider">ADD JOURNAL ENTRY</h3>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold text-bat-gray uppercase tracking-widest mb-1">
-                  Chronological Date
+                  Date
                 </label>
                 <input
                   type="date"
@@ -113,13 +113,13 @@ export const SideQuests: React.FC = () => {
 
               <div>
                 <label className="block text-xs font-bold text-bat-gray uppercase tracking-widest mb-1">
-                  Quest Log Details
+                  Journal Entry Details
                 </label>
                 <textarea
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   className="w-full px-4 py-3 bg-bat-black border border-bat-border text-bat-white focus:outline-none focus:border-bat-gold rounded text-xs transition-colors h-40 resize-none font-mono leading-relaxed"
-                  placeholder="Record activities, unexpected findings, and tactical outputs of your day..."
+                  placeholder="Record your thoughts, experiences, daily accomplishments, or notes..."
                   required
                 />
                 <div className="text-[10px] text-bat-gray font-mono text-right mt-1">
@@ -130,7 +130,7 @@ export const SideQuests: React.FC = () => {
               {/* Tag Selector Chips */}
               <div>
                 <label className="block text-xs font-bold text-bat-gray uppercase tracking-widest mb-2">
-                  Quest Classification Tags
+                  Entry Tags
                 </label>
                 <div className="flex flex-wrap gap-1.5">
                   {AVAILABLE_TAGS.map((tag) => {
@@ -158,7 +158,7 @@ export const SideQuests: React.FC = () => {
                 disabled={submitting}
                 className="w-full py-2.5 bg-bat-gold hover:bg-bat-gold-dim text-bat-black font-bebas text-lg tracking-widest transition-colors rounded uppercase"
               >
-                {submitting ? 'ENCRYPTING DISPATCH...' : 'ENCRYPT AND LOCK ENTRY'}
+                {submitting ? 'SAVING ENTRY...' : 'SAVE JOURNAL ENTRY'}
               </button>
             </form>
           </div>
@@ -167,11 +167,11 @@ export const SideQuests: React.FC = () => {
         {/* Scrollable Log Feed (Right side) */}
         <div className="lg:col-span-2 space-y-4">
           <div className="bat-glass p-6 rounded">
-            <h3 className="font-bebas text-xl text-bat-gold tracking-wider mb-6">SECURED JOURNAL TELEMETRY</h3>
+            <h3 className="font-bebas text-xl text-bat-gold tracking-wider mb-6">JOURNAL ENTRIES</h3>
             
             {sideQuests.length === 0 ? (
               <div className="p-8 text-center text-xs text-bat-gray font-mono uppercase border border-dashed border-bat-border rounded">
-                NO SIDE QUEST DISPATCHES RECEIVED.
+                NO JOURNAL ENTRIES FOUND. ADD YOUR FIRST NOTE USING THE FORM.
               </div>
             ) : (
               <div className="space-y-6">
@@ -221,7 +221,7 @@ export const SideQuests: React.FC = () => {
                       {/* AI Action Trigger */}
                       <div className="border-t border-bat-border pt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-4">
                         <span className="text-[10px] font-mono text-bat-gray uppercase">
-                          DISPATCH ENCRYPTED ON {new Date(entry.created_at || entry.date).toLocaleDateString()}
+                          SAVED ON {new Date(entry.created_at || entry.date).toLocaleDateString()}
                         </span>
                         
                         <button
@@ -230,7 +230,7 @@ export const SideQuests: React.FC = () => {
                           className="flex items-center gap-2 bg-bat-dark border border-bat-border hover:border-bat-gold text-bat-gold text-xs font-mono px-3.5 py-1.5 rounded transition-all"
                         >
                           <AIMentorIcon size={14} />
-                          {isLoadingAnalysis ? 'DECRYPTING MIND STATE...' : 'ANALYZE THIS'}
+                          {isLoadingAnalysis ? 'ANALYZING ENTRY...' : "GET ALFRED'S INSIGHTS"}
                         </button>
                       </div>
 
@@ -245,7 +245,7 @@ export const SideQuests: React.FC = () => {
                           >
                             <div className="bg-bat-dark p-4 border border-bat-gold border-opacity-30 rounded relative mt-2">
                               <span className="text-[10px] font-mono text-bat-gold uppercase block mb-1">
-                                ALFRED TACTICAL AUDIT
+                                ALFRED'S JOURNAL INSIGHTS
                               </span>
                               <div className="text-xs font-mono leading-relaxed text-bat-white whitespace-pre-wrap">
                                 {analyses[entry.id]}

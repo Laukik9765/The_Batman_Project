@@ -57,9 +57,9 @@ export const FinanceTracker: React.FC<{ onNavigate: (path: string) => void }> = 
       const defaults = [
         { name: 'Salary', type: 'income', color: '#40C870', icon_key: 'briefcase' },
         { name: 'Freelance', type: 'income', color: '#4080E8', icon_key: 'terminal' },
-        { name: 'Food & Rations', type: 'expense', color: '#F5C518', icon_key: 'shopping-cart' },
-        { name: 'Batcave Gear & Assets', type: 'expense', color: '#E84040', icon_key: 'tool' },
-        { name: 'Operational Logistics', type: 'expense', color: '#8888A0', icon_key: 'truck' },
+        { name: 'Food & Dining', type: 'expense', color: '#F5C518', icon_key: 'shopping-cart' },
+        { name: 'Gear & Equipment', type: 'expense', color: '#E84040', icon_key: 'tool' },
+        { name: 'Bills & Logistics', type: 'expense', color: '#8888A0', icon_key: 'truck' },
         { name: 'Recreation', type: 'expense', color: '#C49A10', icon_key: 'coffee' }
       ];
 
@@ -149,9 +149,9 @@ export const FinanceTracker: React.FC<{ onNavigate: (path: string) => void }> = 
       const result = await response.json();
       if (response.ok && result.reply) {
         setAiReport(result.reply);
-        addToast('Alfred financial audit decrypted.', 'success');
+        addToast('Alfred financial advice ready.', 'success');
       } else {
-        setAiReport("Sir, I could not finalize the ledger parsing. Verify connection integrity.");
+        setAiReport("Sir, unable to analyze transactions at this time.");
       }
     } catch (e) {
       console.error(e);
@@ -240,8 +240,7 @@ export const FinanceTracker: React.FC<{ onNavigate: (path: string) => void }> = 
 
   return (
     <div className="space-y-6">
-      
-      {/* Zero Income Warning Banner */}
+           {/* Zero income warning alert banner */}
       <AnimatePresence>
         {showZeroIncomeWarning && (
           <motion.div
@@ -253,9 +252,9 @@ export const FinanceTracker: React.FC<{ onNavigate: (path: string) => void }> = 
             <div className="flex items-center gap-3">
               <span className="text-bat-danger"><WarningIcon size={24} /></span>
               <div>
-                <span className="font-bebas text-lg tracking-wider text-bat-danger block">NO INCOME LOGGED FOR 7 DAYS</span>
+                <span className="font-bebas text-lg tracking-wider text-bat-danger block">NO INCOME LOGGED IN 7 DAYS</span>
                 <span className="text-xs text-bat-gray font-mono">
-                  Sir, cashflow is the lifeblood of our operation. Let's inspect funding strategies with Alfred.
+                  Sir, you haven't logged any income recently. Ask Alfred for financial guidance.
                 </span>
               </div>
             </div>
@@ -263,7 +262,7 @@ export const FinanceTracker: React.FC<{ onNavigate: (path: string) => void }> = 
               onClick={() => onNavigate('/ai-mentor')}
               className="bg-bat-danger text-white text-xs font-mono px-4 py-2 rounded hover:bg-opacity-90 transition-colors"
             >
-              DISPATCH MISSION TO ALFRED
+              ASK ALFRED
             </button>
           </motion.div>
         )}
@@ -277,12 +276,12 @@ export const FinanceTracker: React.FC<{ onNavigate: (path: string) => void }> = 
             className="flex items-center gap-2 bg-bat-dark border border-bat-border hover:border-bat-gold text-bat-gold px-4 py-2 rounded font-bebas text-md tracking-wider transition-colors"
           >
             <PlusIcon size={16} />
-            DEFINE CATEGORY
+            ADD CATEGORY
           </button>
         </div>
         <div className="flex items-center gap-4">
           <div className="text-center sm:text-right">
-            <span className="text-[10px] text-bat-gray font-mono uppercase block">NET LIFETIME CASHFLOW</span>
+            <span className="text-[10px] text-bat-gray font-mono uppercase block">NET BALANCE</span>
             <span className={`text-xl font-bebas tracking-wide ${netBalance >= 0 ? 'text-bat-success' : 'text-bat-danger'}`}>
               {netBalance >= 0 ? '+' : ''}₹{netBalance.toFixed(2)}
             </span>
@@ -301,7 +300,7 @@ export const FinanceTracker: React.FC<{ onNavigate: (path: string) => void }> = 
               className="bg-bat-dark border border-bat-border p-6 rounded shadow-[0_4px_30px_rgba(0,0,0,0.8)] w-full max-w-md bat-glow-gold"
             >
               <div className="flex justify-between items-center pb-4 border-b border-bat-border mb-4">
-                <span className="font-bebas text-xl text-bat-gold tracking-wider">DEFINE LEDGER CATEGORY</span>
+                <span className="font-bebas text-xl text-bat-gold tracking-wider">CREATE CATEGORY</span>
                 <button onClick={() => setShowAddCategory(false)} className="text-bat-gray hover:text-bat-white">
                   <XIcon size={18} />
                 </button>
@@ -317,7 +316,7 @@ export const FinanceTracker: React.FC<{ onNavigate: (path: string) => void }> = 
                     value={catName}
                     onChange={(e) => setCatName(e.target.value)}
                     className="w-full px-4 py-2 bg-bat-black border border-bat-border text-bat-white focus:outline-none focus:border-bat-gold rounded text-sm transition-colors"
-                    placeholder="e.g. Batmobile Fuel or Bounty"
+                    placeholder="e.g. Subscriptions or Groceries"
                     required
                   />
                 </div>
@@ -372,7 +371,7 @@ export const FinanceTracker: React.FC<{ onNavigate: (path: string) => void }> = 
           <div className="bat-glass p-6 rounded">
             <div className="flex items-center gap-2 text-bat-gold mb-6 border-b border-bat-border pb-3">
               <FinanceIcon size={24} />
-              <h3 className="font-bebas text-2xl tracking-wider">WRITE TRANSACTION</h3>
+              <h3 className="font-bebas text-2xl tracking-wider">ADD TRANSACTION</h3>
             </div>
 
             <div className="flex gap-2 mb-6">
@@ -440,7 +439,7 @@ export const FinanceTracker: React.FC<{ onNavigate: (path: string) => void }> = 
                 <div>
                   <div className="flex justify-between items-center mb-1">
                     <label className="block text-[10px] font-bold text-bat-gray uppercase tracking-widest">
-                      Category Link
+                      Category
                     </label>
                     <button
                       type="button"
@@ -450,7 +449,7 @@ export const FinanceTracker: React.FC<{ onNavigate: (path: string) => void }> = 
                       }}
                       className="text-[9px] text-bat-gold hover:underline font-mono uppercase font-bold"
                     >
-                      + DEFINE
+                      + ADD
                     </button>
                   </div>
                   <select
@@ -482,14 +481,14 @@ export const FinanceTracker: React.FC<{ onNavigate: (path: string) => void }> = 
 
               <div>
                 <label className="block text-xs font-bold text-bat-gray uppercase tracking-widest mb-1">
-                  Log Note / Reference
+                  Log Note / Description
                 </label>
                 <input
                   type="text"
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                   className="w-full px-4 py-2 bg-bat-black border border-bat-border text-bat-white focus:outline-none focus:border-bat-gold rounded text-xs font-mono"
-                  placeholder="Reference memo..."
+                  placeholder="Reference note..."
                 />
               </div>
 
@@ -503,7 +502,7 @@ export const FinanceTracker: React.FC<{ onNavigate: (path: string) => void }> = 
                 }`}
               >
                 {submitting
-                  ? 'RECORDING LEDGER...'
+                  ? 'SAVING TRANSACTION...'
                   : transactionType === 'income'
                     ? 'ADD MONEY (₹)'
                     : 'LOG SPENT MONEY (₹)'}
@@ -521,7 +520,7 @@ export const FinanceTracker: React.FC<{ onNavigate: (path: string) => void }> = 
             {/* Pie Chart: monthly expense breakdown */}
             <div className="bat-glass p-6 rounded flex flex-col items-center">
               <h3 className="font-bebas text-lg text-bat-gold tracking-wide mb-4">
-                EXPENSE STRUCTURE ({thisMonthStr})
+                MONTHLY EXPENSES ({thisMonthStr})
               </h3>
               {pieData.length === 0 ? (
                 <div className="py-12 text-xs text-bat-gray font-mono uppercase text-center">
@@ -574,7 +573,7 @@ export const FinanceTracker: React.FC<{ onNavigate: (path: string) => void }> = 
 
             {/* Bar Chart: Income vs Expense per month */}
             <div className="bat-glass p-6 rounded">
-              <h3 className="font-bebas text-lg text-bat-gold tracking-wide mb-4">OPERATIONAL RETENTION (LAST 6M)</h3>
+              <h3 className="font-bebas text-lg text-bat-gold tracking-wide mb-4">INCOME VS EXPENSES (LAST 6M)</h3>
               {barData.length === 0 ? (
                 <div className="py-12 text-xs text-bat-gray font-mono uppercase text-center">NO CASHFLOW RECORDED</div>
               ) : (
@@ -604,9 +603,9 @@ export const FinanceTracker: React.FC<{ onNavigate: (path: string) => void }> = 
               <AIMentorIcon size={64} />
             </div>
             <div>
-              <h3 className="font-bebas text-lg text-bat-gold tracking-wide mb-2">FINANCIAL WEALTH AUDIT</h3>
+              <h3 className="font-bebas text-lg text-bat-gold tracking-wide mb-2">FINANCIAL ADVICE FROM ALFRED</h3>
               <p className="text-xs text-bat-gray font-mono max-w-md leading-normal">
-                Authorize Alfred to parse the ledger and discover cost reductions to fund strategic equipment assets.
+                Ask Alfred to analyze your spending and suggest ways to save.
               </p>
             </div>
             <button
@@ -615,7 +614,7 @@ export const FinanceTracker: React.FC<{ onNavigate: (path: string) => void }> = 
               className="bg-bat-dark border border-bat-border hover:border-bat-gold text-bat-gold font-mono text-xs px-4 py-2.5 rounded transition-all flex items-center gap-2 self-start md:self-auto"
             >
               <AIMentorIcon size={14} />
-              {loadingReport ? 'AUDITING CASHFLOW...' : 'AUDIT WITH ALFRED'}
+              {loadingReport ? 'ANALYZING...' : "GET ALFRED'S ADVICE"}
             </button>
           </div>
 
@@ -630,7 +629,7 @@ export const FinanceTracker: React.FC<{ onNavigate: (path: string) => void }> = 
               >
                 <div className="flex items-center gap-2 text-bat-gold mb-3">
                   <AIMentorIcon size={18} />
-                  <span className="font-bebas text-lg tracking-wider">ALFRED'S FINANCIAL BRIEFING</span>
+                  <span className="font-bebas text-lg tracking-wider">ALFRED'S FINANCIAL ADVICE</span>
                 </div>
                 <p className="text-xs font-mono text-bat-white leading-relaxed whitespace-pre-wrap bg-bat-black p-4 border border-bat-border rounded">
                   {aiReport}
@@ -641,7 +640,7 @@ export const FinanceTracker: React.FC<{ onNavigate: (path: string) => void }> = 
 
           {/* Transaction History Logs */}
           <div className="bat-glass p-6 rounded">
-            <h3 className="font-bebas text-xl text-bat-gold tracking-wider mb-4">LOG TRANSACTION HISTORY</h3>
+            <h3 className="font-bebas text-xl text-bat-gold tracking-wider mb-4">TRANSACTION HISTORY</h3>
             {financeTransactions.length === 0 ? (
               <div className="p-8 text-center text-xs text-bat-gray font-mono uppercase border border-dashed border-bat-border rounded bg-bat-black bg-opacity-30">
                 NO TRANSACTIONS LOGGED.

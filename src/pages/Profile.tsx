@@ -108,10 +108,10 @@ export const Profile: React.FC = () => {
         reminder_enabled: reminderEnabled,
         reminder_time: reminderTime
       });
-      addToast('Tactical reminder protocols updated.', 'success');
+      addToast('Daily reminder settings updated.', 'success');
     } catch (err: any) {
       console.error(err);
-      addToast(err.message || 'Failed to update reminder database record.', 'danger');
+      addToast(err.message || 'Failed to update reminder settings.', 'danger');
     } finally {
       setSavingReminders(false);
     }
@@ -129,20 +129,20 @@ export const Profile: React.FC = () => {
     }
 
     try {
-      new Notification('Bat-Signal: Tactical Alert', {
-        body: 'Alfred: "Sir, this is a test of your daily checklist alert system. Complete all daily tasks."',
+      new Notification('Alfred: Daily Reminder', {
+        body: 'Alfred: "Sir, this is a test of your daily reminder alert system. Have a productive day!"',
         icon: '/favicon.svg'
       });
-      addToast('Test signal transmitted successfully.', 'success');
+      addToast('Test notification sent successfully.', 'success');
     } catch (err) {
       console.error('Notification constructor error:', err);
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.ready.then((registration) => {
-          registration.showNotification('Bat-Signal: Tactical Alert', {
-            body: 'Alfred: "Sir, this is a test of your daily checklist alert system. Complete all daily tasks."',
+          registration.showNotification('Alfred: Daily Reminder', {
+            body: 'Alfred: "Sir, this is a test of your daily reminder alert system. Have a productive day!"',
             icon: '/favicon.svg'
           });
-          addToast('Test signal transmitted via Service Worker.', 'success');
+          addToast('Test notification sent via Service Worker.', 'success');
         }).catch((swErr) => {
           console.error(swErr);
           addToast('Failed to trigger notification.', 'danger');
@@ -179,15 +179,15 @@ export const Profile: React.FC = () => {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportDossier, null, 2));
       const downloadAnchor = document.createElement('a');
       downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `batman_dossier_export_${profile.username}.json`);
+      downloadAnchor.setAttribute("download", `data_export_${profile.username}.json`);
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
       downloadAnchor.remove();
 
-      addToast('Intelligence dossier exported successfully.', 'success');
+      addToast('Data exported successfully.', 'success');
     } catch (err) {
       console.error(err);
-      addToast('Data extraction failed.', 'danger');
+      addToast('Export failed.', 'danger');
     }
   };
 
@@ -197,7 +197,7 @@ export const Profile: React.FC = () => {
     if (!profile) return;
 
     if (deleteConfirmationText !== 'DELETE PERMANENTLY') {
-      addToast('Wipe phrase invalid.', 'danger');
+      addToast('Confirmation phrase invalid.', 'danger');
       return;
     }
 
@@ -207,12 +207,12 @@ export const Profile: React.FC = () => {
       
       if (error) throw error;
 
-      addToast('Identity purged from records. System shutdown initiated.', 'info');
+      addToast('Account deleted. Logging out.', 'info');
       // Sign out and clear local state
       logout();
     } catch (err: any) {
       console.error(err);
-      addToast(err.message || 'Wipe operation aborted by server.', 'danger');
+      addToast(err.message || 'Account deletion failed.', 'danger');
     }
   };
 
@@ -226,14 +226,14 @@ export const Profile: React.FC = () => {
           <div className="bat-glass p-6 rounded">
             <div className="flex items-center gap-2 text-bat-gold mb-6 border-b border-bat-border pb-3">
               <UserIcon size={24} />
-              <h3 className="font-bebas text-2xl tracking-wider">IDENTITY METRICS</h3>
+              <h3 className="font-bebas text-2xl tracking-wider">PROFILE & SETTINGS</h3>
             </div>
 
             <form onSubmit={handleUpdateProfile} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-[9px] font-bold text-bat-gray uppercase tracking-widest mb-1">
-                    System Username
+                    Username
                   </label>
                   <input
                     type="text"
@@ -244,7 +244,7 @@ export const Profile: React.FC = () => {
                 </div>
                 <div>
                   <label className="block text-[9px] font-bold text-bat-gray uppercase tracking-widest mb-1">
-                    Secured Email
+                    Email Address
                   </label>
                   <input
                     type="text"
@@ -257,7 +257,7 @@ export const Profile: React.FC = () => {
 
               <div>
                 <label className="block text-[9px] font-bold text-bat-gray uppercase tracking-widest mb-1">
-                  Operational display Name
+                  Full Name
                 </label>
                 <input
                   type="text"
@@ -270,7 +270,7 @@ export const Profile: React.FC = () => {
 
               <div>
                 <label className="block text-[9px] font-bold text-bat-gray uppercase tracking-widest mb-1">
-                  Active Operational Timezone
+                  Timezone
                 </label>
                 <select
                   value={timezone}
@@ -296,7 +296,7 @@ export const Profile: React.FC = () => {
                 disabled={saving}
                 className="bg-bat-gold hover:bg-bat-gold-dim text-bat-black font-bebas text-lg px-6 py-2.5 tracking-widest transition-colors rounded uppercase"
               >
-                {saving ? 'MODIFYING DOSSIER...' : 'SAVE CHANGES'}
+                {saving ? 'SAVING...' : 'SAVE CHANGES'}
               </button>
             </form>
           </div>
@@ -305,15 +305,15 @@ export const Profile: React.FC = () => {
         {/* Data Options (Right) */}
         <div className="space-y-6">
           
-          {/* Tactical Reminder Protocols Card */}
+          {/* Daily Reminders Card */}
           <div className="bat-glass p-6 rounded border-l-4 border-bat-gold flex flex-col justify-between">
             <div>
               <div className="flex items-center gap-2 text-bat-gold mb-3">
                 <BellIcon size={20} />
-                <h3 className="font-bebas text-xl tracking-wider">TACTICAL REMINDERS</h3>
+                <h3 className="font-bebas text-xl tracking-wider">DAILY REMINDERS</h3>
               </div>
               <p className="text-[10px] text-bat-gray leading-relaxed mb-4 font-mono">
-                Alfred: "Sir, configure the daily alert system to verify that all Gotham defense checklist checkpoints are completed."
+                Alfred: "Sir, set up daily reminders to keep track of your daily habits and goals."
               </p>
               
               <form onSubmit={handleSaveReminders} className="space-y-4">
@@ -358,7 +358,7 @@ export const Profile: React.FC = () => {
                     onClick={handleSendTestNotification}
                     className="py-2 px-3 bg-bat-black border border-bat-border hover:border-bat-gold text-bat-gold font-bold rounded transition-colors text-center text-[10px] uppercase font-bold"
                   >
-                    TEST SIGNAL
+                    TEST NOTIFICATION
                   </button>
                 </div>
               </form>
@@ -368,32 +368,32 @@ export const Profile: React.FC = () => {
           {/* Data Export Card */}
           <div className="bat-glass p-6 rounded flex flex-col justify-between h-48">
             <div>
-              <h3 className="font-bebas text-xl text-bat-gold tracking-wider mb-2">GDPR DECIPHER TOOL</h3>
+              <h3 className="font-bebas text-xl text-bat-gold tracking-wider mb-2">DATA EXPORT (JSON)</h3>
               <p className="text-[10px] text-bat-gray leading-relaxed mb-4">
-                Download a complete raw backup copy of all compiled records, transactions, logs, and objectives.
+                Download a backup copy of all your habits, notes, sleep logs, goals, and transactions.
               </p>
             </div>
             <button
               onClick={handleExportData}
               className="w-full py-2 bg-bat-black border border-bat-border hover:border-bat-gold text-bat-gold font-bold rounded transition-colors text-center uppercase"
             >
-              EXPORT INTELLIGENCE DOSSIER
+              EXPORT ALL DATA (JSON)
             </button>
           </div>
 
           {/* Delete Account Card */}
           <div className="bat-glass p-6 rounded border-l-4 border-bat-danger flex flex-col justify-between h-48">
             <div>
-              <h3 className="font-bebas text-xl text-bat-danger tracking-wider mb-2">PURGE IDENTITY</h3>
+              <h3 className="font-bebas text-xl text-bat-danger tracking-wider mb-2">DELETE ACCOUNT</h3>
               <p className="text-[10px] text-bat-gray leading-relaxed mb-4">
-                Execute account deletion protocol. Irreversibly wipes all credentials, reports, and logs.
+                Permanently delete your account and remove all your data.
               </p>
             </div>
             <button
               onClick={() => setShowDeleteConfirm(true)}
               className="w-full py-2 bg-bat-danger bg-opacity-10 border border-bat-danger text-bat-danger hover:bg-opacity-20 font-bold rounded transition-colors text-center uppercase"
             >
-              PURGE MAINFRAME RECORD
+              DELETE ACCOUNT
             </button>
           </div>
 
@@ -413,11 +413,11 @@ export const Profile: React.FC = () => {
             >
               <div className="flex items-center gap-2 text-bat-danger mb-4">
                 <WarningIcon size={24} />
-                <h3 className="font-bebas text-2xl tracking-wider">EXECUTE PURGE PROTOCOL</h3>
+                <h3 className="font-bebas text-2xl tracking-wider">CONFIRM ACCOUNT DELETION</h3>
               </div>
 
               <p className="text-xs text-bat-white leading-relaxed mb-4">
-                This operation is <span className="text-bat-danger font-bold uppercase">irreversible</span>. It will wipe all logs and credentials.
+                This operation is <span className="text-bat-danger font-bold uppercase">irreversible</span>. It will wipe all your logs and data.
               </p>
 
               <form onSubmit={handleDeleteAccount} className="space-y-4">
@@ -444,14 +444,14 @@ export const Profile: React.FC = () => {
                     }}
                     className="flex-1 py-2 border border-bat-border text-bat-gray hover:text-bat-white hover:border-bat-gray rounded font-bold uppercase"
                   >
-                    ABORT
+                    CANCEL
                   </button>
                   <button
                     type="submit"
                     disabled={deleteConfirmationText !== 'DELETE PERMANENTLY'}
                     className="flex-1 py-2 bg-bat-danger hover:bg-opacity-95 text-white disabled:opacity-50 disabled:cursor-not-allowed rounded font-bold uppercase"
                   >
-                    PURGE RECORD
+                    DELETE PERMANENTLY
                   </button>
                 </div>
               </form>

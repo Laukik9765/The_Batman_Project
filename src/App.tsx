@@ -137,39 +137,39 @@ const AppContent: React.FC = () => {
     case '/':
     case '/dashboard':
       pageContent = <Dashboard />;
-      pageTitle = 'Dashboard Mainframe';
+      pageTitle = 'Dashboard';
       break;
     case '/daily-tasks':
       pageContent = <DailyTasks />;
-      pageTitle = 'Habits & Checklist';
+      pageTitle = 'Daily Habits';
       break;
     case '/goals':
       pageContent = <Goals />;
-      pageTitle = 'Strategic Objectives';
+      pageTitle = 'Goals & Objectives';
       break;
     case '/side-quests':
       pageContent = <SideQuests />;
-      pageTitle = 'Daily Activity Journal';
+      pageTitle = 'Daily Journal';
       break;
     case '/sleep':
       pageContent = <SleepTracker />;
-      pageTitle = 'Recuperation Telemetry';
+      pageTitle = 'Sleep Tracker';
       break;
     case '/finance':
       pageContent = <FinanceTracker onNavigate={navigateTo} />;
-      pageTitle = 'Financial Ledger';
+      pageTitle = 'Finance Tracker';
       break;
     case '/ai-mentor':
       pageContent = <AIMentor />;
-      pageTitle = 'AI Alfred terminal';
+      pageTitle = 'AI Mentor (Alfred)';
       break;
     case '/profile':
       pageContent = <Profile />;
-      pageTitle = 'Identity Parameters';
+      pageTitle = 'Profile & Settings';
       break;
     case '/admin':
       pageContent = <AdminPanel />;
-      pageTitle = 'Admin Central';
+      pageTitle = 'Admin Panel';
       break;
   }
 

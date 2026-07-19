@@ -152,7 +152,7 @@ export const Signup: React.FC = () => {
 
             <div>
               <label className="block text-xs font-bold text-bat-gray uppercase tracking-widest mb-1">
-                Secured Email Address
+                Email Address
               </label>
               <input
                 type="email"
@@ -167,7 +167,7 @@ export const Signup: React.FC = () => {
 
             <div>
               <label className="block text-xs font-bold text-bat-gray uppercase tracking-widest mb-1">
-                Database Password
+                Password
               </label>
               <input
                 type="password"
@@ -221,15 +221,15 @@ export const Signup: React.FC = () => {
               disabled={submitting}
               className={`w-full py-3 mt-4 bg-bat-gold hover:bg-bat-gold-dim text-bat-black font-bebas text-lg tracking-widest transition-colors rounded shadow-[0_0_10px_rgba(245,197,24,0.1)] flex items-center justify-center`}
             >
-              {submitting ? 'PROCESSING PROTOCOL...' : 'ENCRYPT AND REGISTER'}
+              {submitting ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT'}
             </button>
           </form>
         )}
 
         <div className="mt-8 text-center text-xs">
-          <span className="text-bat-gray">Already in the database? </span>
+          <span className="text-bat-gray">Already have an account? </span>
           <a href="/login" className="text-bat-gold hover:underline font-semibold">
-            SECURE LOGIN
+            LOG IN
           </a>
         </div>
       </motion.div>
@@ -247,7 +247,7 @@ export const Signup: React.FC = () => {
             >
               {/* Header */}
               <div className="flex justify-between items-center px-6 py-4 bg-bat-black border-b border-bat-border text-bat-gold">
-                <span className="font-bebas text-2xl tracking-wider">SECURE TERMINAL — TERMS OF SERVICE</span>
+                <span className="font-bebas text-2xl tracking-wider">TERMS OF SERVICE</span>
                 <button
                   onClick={() => setShowTos(false)}
                   className="text-bat-gray hover:text-bat-white transition-colors"

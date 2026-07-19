@@ -35,12 +35,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const menuItems = [
     { name: 'Dashboard', path: '/dashboard', Icon: BatIcon },
     { name: 'Daily Habits', path: '/daily-tasks', Icon: DailyTasksIcon },
-    { name: 'Goals / Tasks', path: '/goals', Icon: GoalsIcon },
-    { name: 'Side Quests', path: '/side-quests', Icon: SideQuestsIcon },
+    { name: 'Goals & Objectives', path: '/goals', Icon: GoalsIcon },
+    { name: 'Daily Journal', path: '/side-quests', Icon: SideQuestsIcon },
     { name: 'Sleep Tracker', path: '/sleep', Icon: SleepIcon },
-    { name: 'Finance Ledger', path: '/finance', Icon: FinanceIcon },
+    { name: 'Finance Tracker', path: '/finance', Icon: FinanceIcon },
     { name: 'AI Mentor Alfred', path: '/ai-mentor', Icon: AIMentorIcon },
-    { name: 'Profile & Export', path: '/profile', Icon: UserIcon }
+    { name: 'Profile & Settings', path: '/profile', Icon: UserIcon }
   ];
 
   const handleItemClick = (path: string) => {
@@ -64,7 +64,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         type="button"
         onClick={() => handleItemClick('/dashboard')}
         className="flex items-center gap-3 px-6 py-6 border-b border-bat-border w-full text-left hover:bg-bat-black hover:bg-opacity-25 transition-all focus:outline-none focus:ring-1 focus:ring-bat-gold focus:ring-inset"
-        aria-label="Go to Dashboard Mainframe"
+        aria-label="Go to Dashboard"
       >
         <span className="text-bat-gold animate-pulse"><BatIcon size={30} /></span>
         <span className="font-bebas text-2xl tracking-widest text-bat-gold">BATMAN PROJECT</span>
@@ -72,8 +72,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* User Quick Info */}
       <div className="px-6 py-4 border-b border-bat-border bg-bat-black bg-opacity-30">
-        <div className="text-xs text-bat-gray font-mono uppercase">BATCAVE TELEMETRY</div>
-        <div className="text-sm font-bold text-bat-white truncate mt-1">{profile?.full_name || 'Gotham Vigilante'}</div>
+        <div className="text-xs text-bat-gray font-mono uppercase">USER ACCOUNT</div>
+        <div className="text-sm font-bold text-bat-white truncate mt-1">{profile?.full_name || 'User'}</div>
         <div className="text-[10px] text-bat-gold font-mono truncate">{profile?.username ? `@${profile.username}` : ''}</div>
       </div>
 
@@ -100,7 +100,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           className="w-full flex items-center justify-center gap-2 py-2.5 border border-bat-border text-bat-gray hover:text-bat-danger hover:border-bat-danger transition-colors font-bebas text-md tracking-wider rounded"
         >
           <LogOutIcon size={18} />
-          SECURE SHUTDOWN
+          LOG OUT
         </button>
       </div>
     </div>

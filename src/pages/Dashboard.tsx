@@ -252,10 +252,10 @@ export const Dashboard: React.FC = () => {
       <div className="bat-glass p-6 rounded relative overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="font-bebas text-3xl md:text-4xl text-bat-gold tracking-widest">
-            {greeting.toUpperCase()}, {profile?.full_name?.toUpperCase() || 'VIGILANTE'}
+            {greeting.toUpperCase()}, {profile?.full_name?.toUpperCase() || 'USER'}
           </h1>
           <p className="text-sm font-mono text-bat-gray uppercase mt-1">
-            GOTHAM CITY SURVEILLANCE DATA — TERMINAL ACTIVE
+            WELCOME BACK — HERE IS YOUR DAILY OVERVIEW
           </p>
         </div>
         
@@ -278,7 +278,7 @@ export const Dashboard: React.FC = () => {
         
         {/* Progress Ring Card */}
         <div className="bat-glass p-6 rounded flex flex-col items-center justify-center text-center">
-          <h3 className="font-bebas text-xl text-bat-gold tracking-wider mb-4">TODAY'S TASK INTEGRITY</h3>
+          <h3 className="font-bebas text-xl text-bat-gold tracking-wider mb-4">TODAY'S HABIT PROGRESS</h3>
           <div className="relative w-36 h-36 flex items-center justify-center">
             {/* SVG Progress Circle */}
             <svg className="w-full h-full transform -rotate-90">
@@ -336,7 +336,7 @@ export const Dashboard: React.FC = () => {
           <div className="bat-glass p-5 rounded flex flex-col justify-between">
             <div>
               <span className="text-bat-gold mb-1 block"><DailyTasksIcon size={20} /></span>
-              <div className="text-[10px] text-bat-gray font-mono uppercase">DAILY CHECKLIST</div>
+              <div className="text-[10px] text-bat-gray font-mono uppercase">DAILY HABITS</div>
             </div>
             <div className="mt-4">
               <span className="text-3xl font-bebas text-bat-white font-semibold">{stats.tasksDone}</span>
@@ -347,7 +347,7 @@ export const Dashboard: React.FC = () => {
           <div className="bat-glass p-5 rounded flex flex-col justify-between">
             <div>
               <span className="text-bat-gold mb-1 block"><GoalsIcon size={20} /></span>
-              <div className="text-[10px] text-bat-gray font-mono uppercase">OBJECTIVES METRIC</div>
+              <div className="text-[10px] text-bat-gray font-mono uppercase">GOALS OVERVIEW</div>
             </div>
             <div className="mt-4">
               <span className="text-3xl font-bebas text-bat-white font-semibold">{stats.activeGoals}</span>
@@ -358,7 +358,7 @@ export const Dashboard: React.FC = () => {
           <div className="bat-glass p-5 rounded flex flex-col justify-between">
             <div>
               <span className="text-bat-gold mb-1 block"><SleepIcon size={20} /></span>
-              <div className="text-[10px] text-bat-gray font-mono uppercase">SLEEP RECUPERATION</div>
+              <div className="text-[10px] text-bat-gray font-mono uppercase">SLEEP TRACKER</div>
             </div>
             <div className="mt-4">
               <span className="text-3xl font-bebas text-bat-white font-semibold">{stats.sleepHours}h</span>
@@ -369,7 +369,7 @@ export const Dashboard: React.FC = () => {
           <div className="bat-glass p-5 rounded flex flex-col justify-between">
             <div>
               <span className="text-bat-gold mb-1 block"><FinanceIcon size={20} /></span>
-              <div className="text-[10px] text-bat-gray font-mono uppercase">FINANCIAL LEDGER</div>
+              <div className="text-[10px] text-bat-gray font-mono uppercase">FINANCE OVERVIEW</div>
             </div>
             <div className="mt-4">
               <span className={`text-3xl font-bebas font-semibold ${
@@ -390,7 +390,7 @@ export const Dashboard: React.FC = () => {
           <AIMentorIcon size={64} />
         </div>
         <div className="flex items-center gap-2 text-bat-gold mb-2">
-          <span className="font-bebas text-lg tracking-wider">TRANSMISSION FROM ALFRED</span>
+          <span className="font-bebas text-lg tracking-wider">DAILY MOTIVATION FROM ALFRED</span>
           <span className="w-1.5 h-1.5 rounded-full bg-bat-success animate-ping" />
         </div>
         <p className="text-sm font-mono leading-relaxed text-bat-white max-w-2xl">
@@ -400,11 +400,11 @@ export const Dashboard: React.FC = () => {
 
       {/* Recent Activity Feed */}
       <div className="bat-glass p-6 rounded">
-        <h3 className="font-bebas text-xl text-bat-gold tracking-wider mb-6">RECENT SECURITY ACTIVITIES</h3>
+        <h3 className="font-bebas text-xl text-bat-gold tracking-wider mb-6">RECENT ACTIVITY</h3>
         
         {activities.length === 0 ? (
           <div className="p-8 text-center text-xs text-bat-gray font-mono uppercase border border-dashed border-bat-border rounded bg-bat-black bg-opacity-30">
-            No recent activity logs found. Complete daily habits to begin database records.
+            No recent activity found. Start completing habits or logging entries to see your progress here.
           </div>
         ) : (
           <div className="relative pl-6 border-l border-bat-border space-y-6">

@@ -247,10 +247,10 @@ export const AdminPanel: React.FC = () => {
             <ShieldIcon size={48} className="animate-pulse" />
           </div>
           <h1 className="font-bebas text-3xl text-bat-gold tracking-widest uppercase mb-1">
-            SECURE ACCESS GATEWAY
+            ADMIN ACCESS GATEWAY
           </h1>
           <p className="text-[10px] text-bat-gray font-mono uppercase tracking-wider mb-6">
-            ADMINISTRATOR VERIFICATION ONLY
+            ADMINISTRATOR LOGIN
           </p>
 
           {loginError && (
@@ -293,12 +293,12 @@ export const AdminPanel: React.FC = () => {
               disabled={authenticating}
               className="w-full py-2.5 bg-bat-gold hover:bg-bat-gold-dim text-bat-black font-bebas text-md tracking-widest rounded transition-colors"
             >
-              {authenticating ? 'VERIFYING SECURITY BEACON...' : 'AUTHENTICATE MAINBOARD'}
+              {authenticating ? 'AUTHENTICATING...' : 'LOG IN TO ADMIN PANEL'}
             </button>
           </form>
 
           <a href="/dashboard" className="text-xs text-bat-gray hover:underline mt-6 inline-block font-mono">
-            RETURN TO CITIZEN INTERFACE
+            BACK TO DASHBOARD
           </a>
         </motion.div>
       </div>
@@ -312,15 +312,15 @@ export const AdminPanel: React.FC = () => {
       <header className="flex flex-col sm:flex-row justify-between items-center px-6 sticky top-0 z-30 bg-bat-dark border-b border-bat-border h-auto py-3 sm:py-0 sm:h-16 gap-3">
         <div className="flex items-center gap-3">
           <span className="text-bat-gold"><ShieldIcon size={24} /></span>
-          <span className="font-bebas text-2xl tracking-widest text-bat-gold uppercase">GOTHAM CENTRAL MAINFRAME</span>
+          <span className="font-bebas text-2xl tracking-widest text-bat-gold uppercase">ADMIN CONTROL PANEL</span>
         </div>
         <div className="flex items-center gap-4">
-          <span className="text-bat-gray font-bold">OPERATOR: {adminUsername?.toUpperCase()}</span>
+          <span className="text-bat-gray font-bold">ADMIN: {adminUsername?.toUpperCase()}</span>
           <button 
             onClick={adminLogout} 
             className="border border-bat-border text-bat-gray hover:text-bat-danger hover:border-bat-danger px-3 py-1.5 rounded transition-colors font-bebas tracking-wide"
           >
-            DISCONNECT
+            LOG OUT
           </button>
         </div>
       </header>
@@ -332,22 +332,22 @@ export const AdminPanel: React.FC = () => {
         {platformStats && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="bat-glass p-4 rounded">
-              <span className="text-bat-gray text-[9px] uppercase">REGISTERED CITIZENS</span>
+              <span className="text-bat-gray text-[9px] uppercase">TOTAL USERS</span>
               <div className="font-bebas text-3xl text-bat-white tracking-wider mt-1">{platformStats.totalUsers}</div>
             </div>
             
             <div className="bat-glass p-4 rounded">
-              <span className="text-bat-gray text-[9px] uppercase">ACTIVE CITIZENS (30D)</span>
+              <span className="text-bat-gray text-[9px] uppercase">ACTIVE USERS (30D)</span>
               <div className="font-bebas text-3xl text-bat-gold tracking-wider mt-1">{platformStats.activeUsers30d}</div>
             </div>
 
             <div className="bat-glass p-4 rounded">
-              <span className="text-bat-gray text-[9px] uppercase">PLATFORM GOAL RETENTION</span>
+              <span className="text-bat-gray text-[9px] uppercase">GOAL COMPLETION RATE</span>
               <div className="font-bebas text-3xl text-bat-success tracking-wider mt-1">{platformStats.avgCompletionRate}%</div>
             </div>
 
             <div className="bat-glass p-4 rounded flex items-center justify-between">
-              <span className="text-bat-gray text-[9px] uppercase">MAINFRAME STATUS</span>
+              <span className="text-bat-gray text-[9px] uppercase">SYSTEM STATUS</span>
               <span className="px-2 py-0.5 bg-bat-success text-black rounded font-bold">ONLINE</span>
             </div>
           </div>
@@ -357,7 +357,7 @@ export const AdminPanel: React.FC = () => {
         {platformStats && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bat-glass p-5 rounded">
-              <h3 className="font-bebas text-lg text-bat-gold tracking-wide mb-4">MODULE UTILIZATION RATINGS</h3>
+              <h3 className="font-bebas text-lg text-bat-gold tracking-wide mb-4">FEATURE USAGE</h3>
               <div className="w-full h-48">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={platformStats.featureUsage} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
@@ -371,7 +371,7 @@ export const AdminPanel: React.FC = () => {
             </div>
 
             <div className="bat-glass p-5 rounded">
-              <h3 className="font-bebas text-lg text-bat-gold tracking-wide mb-4">CITIZENS RECRUITMENT LOG (30D)</h3>
+              <h3 className="font-bebas text-lg text-bat-gold tracking-wide mb-4">NEW USER SIGNUPS (30D)</h3>
               <div className="w-full h-48">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={platformStats.newSignups} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
@@ -389,10 +389,10 @@ export const AdminPanel: React.FC = () => {
         {/* User Index list */}
         <div className="bat-glass p-6 rounded">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-            <h3 className="font-bebas text-xl text-bat-gold tracking-wider">CITIZEN PROTOCOL DATABASE</h3>
+            <h3 className="font-bebas text-xl text-bat-gold tracking-wider">USER DATABASE</h3>
             <input
               type="text"
-              placeholder="SEARCH BY CODENAME OR EMAIL..."
+              placeholder="SEARCH BY USERNAME OR EMAIL..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="px-4 py-2 bg-bat-black border border-bat-border text-bat-white focus:outline-none focus:border-bat-gold rounded text-xs w-full max-w-sm"
@@ -406,7 +406,7 @@ export const AdminPanel: React.FC = () => {
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="border-b border-bat-border text-bat-gray text-[10px] font-bold uppercase tracking-widest bg-bat-black">
-                    <th className="p-3 cursor-pointer select-none" onClick={() => sortData('username')}>Codename</th>
+                    <th className="p-3 cursor-pointer select-none" onClick={() => sortData('username')}>Username</th>
                     <th className="p-3 cursor-pointer select-none hidden sm:table-cell" onClick={() => sortData('email')}>Email</th>
                     <th className="p-3 cursor-pointer select-none hidden md:table-cell" onClick={() => sortData('created_at')}>Signup Date</th>
                     <th className="p-3 cursor-pointer select-none hidden md:table-cell" onClick={() => sortData('total_tasks')}>Habits</th>
@@ -501,13 +501,13 @@ export const AdminPanel: React.FC = () => {
               </button>
 
               <div className="pt-6 border-b border-bat-border pb-4">
-                <span className="text-[10px] text-bat-gold uppercase tracking-wider block">CITIZEN DOSSIER DETAILED BRIEFING</span>
+                <span className="text-[10px] text-bat-gold uppercase tracking-wider block">USER PROFILE DETAILS</span>
                 <h2 className="font-bebas text-3xl text-bat-white mt-1">@{drillDownUser.username.toUpperCase()}</h2>
                 <p className="text-xs text-bat-gray mt-0.5">{drillDownUser.email}</p>
               </div>
 
               {loadingDrillDown ? (
-                <div className="py-24 text-center text-bat-gray uppercase">EXTRACTING PERSONAL ARCHIVES...</div>
+                <div className="py-24 text-center text-bat-gray uppercase">LOADING USER DATA...</div>
               ) : (
                 drillDownData && (
                   <div className="space-y-6">
@@ -522,7 +522,7 @@ export const AdminPanel: React.FC = () => {
                               : 'border-bat-danger text-bat-danger hover:bg-bat-danger hover:text-white'
                           }`}
                         >
-                          {drillDownData.profile.is_suspended ? 'REACTIVATE ACCOUNT' : 'SUSPEND CITIZEN'}
+                          {drillDownData.profile.is_suspended ? 'REACTIVATE ACCOUNT' : 'SUSPEND USER'}
                         </button>
                         
                         <button
@@ -546,19 +546,19 @@ export const AdminPanel: React.FC = () => {
                         onClick={() => runUserAction('deleteUser', drillDownUser.id, 'CRITICAL: Hard delete account? This will wipe all user files irreversibly.')}
                         className="px-3 py-1.5 bg-bat-danger hover:bg-opacity-95 text-white rounded font-bold text-[10px]"
                       >
-                        WIPE & PURGE USER
+                        DELETE USER
                       </button>
                     </div>
 
                     {/* Quick overview metric details */}
                     <div className="grid grid-cols-3 gap-4">
                       <div className="p-3 bg-bat-black border border-bat-border rounded">
-                        <span className="text-bat-gray text-[9px] uppercase">ALFRED TRANSMISSIONS</span>
+                        <span className="text-bat-gray text-[9px] uppercase">ALFRED CHAT MESSAGES</span>
                         <div className="text-xl font-bold text-bat-white mt-1">{drillDownData.aiChatCount}</div>
                       </div>
                       
                       <div className="p-3 bg-bat-black border border-bat-border rounded">
-                        <span className="text-bat-gray text-[9px] uppercase">INCIDENT CATEGORIES</span>
+                        <span className="text-bat-gray text-[9px] uppercase">MISSED REASONS</span>
                         <div className="text-xl font-bold text-bat-white mt-1">
                           {(Object.values(drillDownData.failureStats) as number[]).reduce((s: number, c: number) => s + c, 0)}
                         </div>
@@ -567,16 +567,16 @@ export const AdminPanel: React.FC = () => {
                       <div className="p-3 bg-bat-black border border-bat-border rounded">
                         <span className="text-bat-gray text-[9px] uppercase">ACCOUNT STATUS</span>
                         <div className={`text-xl font-bold mt-1 ${drillDownData.profile.is_suspended ? 'text-bat-danger' : 'text-bat-success'}`}>
-                          {drillDownData.profile.is_suspended ? 'SUSPENDED' : 'OPERATIONAL'}
+                          {drillDownData.profile.is_suspended ? 'SUSPENDED' : 'ACTIVE'}
                         </div>
                       </div>
                     </div>
 
                     {/* Sleep telemetry graph view */}
                     <div className="bat-glass p-4 rounded">
-                      <h3 className="font-bebas text-md text-bat-gold tracking-wider mb-3">RECUPERATION TELEMETRY (30 DAYS)</h3>
+                      <h3 className="font-bebas text-md text-bat-gold tracking-wider mb-3">SLEEP LOGS (30 DAYS)</h3>
                       {drillDownData.sleepLogs.length === 0 ? (
-                        <div className="text-center py-6 text-bat-gray uppercase text-[10px]">NO TELEMETRY RECORDED</div>
+                        <div className="text-center py-6 text-bat-gray uppercase text-[10px]">NO SLEEP LOGS RECORDED</div>
                       ) : (
                         <div className="w-full h-36">
                           <ResponsiveContainer width="100%" height="100%">
@@ -595,10 +595,10 @@ export const AdminPanel: React.FC = () => {
                       
                       <div className="bat-glass p-4 rounded flex flex-col justify-between">
                         <div>
-                          <h3 className="font-bebas text-md text-bat-gold tracking-wider mb-2">FINANCIAL FLOW BALANCE</h3>
+                          <h3 className="font-bebas text-md text-bat-gold tracking-wider mb-2">FINANCIAL SUMMARY</h3>
                           <div className="space-y-1 font-mono text-[10px]">
-                            <div className="flex justify-between"><span>TOTAL DEPOSITS:</span><span className="text-bat-success">₹{drillDownData.financeSummary.income.toFixed(2)}</span></div>
-                            <div className="flex justify-between"><span>TOTAL DEBITS:</span><span className="text-bat-danger">₹{drillDownData.financeSummary.expense.toFixed(2)}</span></div>
+                            <div className="flex justify-between"><span>TOTAL INCOME:</span><span className="text-bat-success">₹{drillDownData.financeSummary.income.toFixed(2)}</span></div>
+                            <div className="flex justify-between"><span>TOTAL EXPENSES:</span><span className="text-bat-danger">₹{drillDownData.financeSummary.expense.toFixed(2)}</span></div>
                           </div>
                         </div>
                         <div className="mt-4 border-t border-bat-border pt-2 flex justify-between">
@@ -633,9 +633,9 @@ export const AdminPanel: React.FC = () => {
 
                     {/* Active Goals list progress details */}
                     <div className="bat-glass p-4 rounded">
-                      <h3 className="font-bebas text-md text-bat-gold tracking-wider mb-3">CITIZEN GOAL PARAMETERS</h3>
+                      <h3 className="font-bebas text-md text-bat-gold tracking-wider mb-3">USER GOALS</h3>
                       {drillDownData.goals.length === 0 ? (
-                        <div className="text-center py-6 text-bat-gray uppercase text-[10px]">NO ACTIVE OBJECTIVES LOGGED</div>
+                        <div className="text-center py-6 text-bat-gray uppercase text-[10px]">NO ACTIVE GOALS LOGGED</div>
                       ) : (
                         <div className="space-y-3">
                           {drillDownData.goals.map((g: any) => (

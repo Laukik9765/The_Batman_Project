@@ -228,22 +228,22 @@ export const AIMentor: React.FC = () => {
         const assistantMsg = addChatMessage('assistant', result.reply);
         typewriterMessagesToAnimate.add(assistantMsg.id);
       } else {
-        const assistantMsg = addChatMessage('assistant', `My apologies, sir. The proxy feed returned an error: ${result.error || 'Signal disrupted.'}. Please verify that the system environment configuration is correct.`);
+        const assistantMsg = addChatMessage('assistant', `My apologies, sir. The server returned an error: ${result.error || 'Connection disrupted.'}. Please try again later.`);
         typewriterMessagesToAnimate.add(assistantMsg.id);
-        addToast(result.error || 'Signal disrupted.', 'danger');
+        addToast(result.error || 'Connection disrupted.', 'danger');
       }
     } catch (err: any) {
       if (err.name === 'AbortError') {
         console.log('AI response fetch aborted by user.');
-        addChatMessage('assistant', '*Transmission terminated by secure recruit.*');
+        addChatMessage('assistant', '*Transmission terminated.*');
         setIsGenerating(false);
         setLoading(false);
         return;
       }
       console.error('Edge Function unreachable:', err);
-      const assistantMsg = addChatMessage('assistant', "My apologies, sir. Connection to the proxy server has been lost. Please verify your internet connection or check if the backend service is offline.");
+      const assistantMsg = addChatMessage('assistant', "My apologies, sir. Connection to Alfred has been lost. Please verify your internet connection.");
       typewriterMessagesToAnimate.add(assistantMsg.id);
-      addToast('Proxy gateway error.', 'danger');
+      addToast('Unable to connect to AI server.', 'danger');
     } finally {
       if (abortControllerRef.current === controller) {
         abortControllerRef.current = null;
@@ -271,7 +271,7 @@ export const AIMentor: React.FC = () => {
           }`}
         >
           <AIMentorIcon size={16} />
-          ALFRED SECURE TERMINAL
+          AI ASSISTANT (ALFRED)
         </button>
         
         <button
@@ -283,7 +283,7 @@ export const AIMentor: React.FC = () => {
           }`}
         >
           <BatIcon size={16} />
-          WEEKLY TRANSMISSIONS ({weeklyReports.length})
+          WEEKLY REPORTS ({weeklyReports.length})
         </button>
       </div>
 
@@ -321,10 +321,10 @@ export const AIMentor: React.FC = () => {
                       <AIMentorIcon size={48} />
                     </div>
                     <h4 className="font-bebas text-xl text-bat-gold tracking-widest uppercase">
-                      Alfred Terminal Initiated
+                      Welcome to Alfred AI
                     </h4>
                     <p className="text-xs font-mono text-bat-gray max-w-sm mt-1 leading-relaxed">
-                      Good day, sir. I have compiled your operational telemetry from all logs. Ask me any details regarding habits, sleep logs, goals, or finance ledgers.
+                      Good day, sir. I have compiled your data from all logs. Ask me any questions regarding your habits, sleep logs, goals, or finances.
                     </p>
                   </div>
                 )}
@@ -346,7 +346,7 @@ export const AIMentor: React.FC = () => {
                         }`}
                       >
                         <div className="text-[9px] uppercase font-bold text-bat-gray mb-1.5 flex items-center justify-between">
-                          <span>{isUser ? 'SECURE_RECRUIT' : 'ALFRED_PENNYWORTH'}</span>
+                          <span>{isUser ? 'YOU' : 'ALFRED'}</span>
                           <span>{new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                         </div>
                         {/* Typwriter text animation for Alfred's latest reply */}
@@ -415,7 +415,7 @@ export const AIMentor: React.FC = () => {
                   onChange={(e) => setInputValue(e.target.value)}
                   disabled={loading}
                   className="flex-grow bg-bat-black border border-bat-border text-bat-white focus:outline-none focus:border-bat-gold rounded px-4 py-2 font-mono text-xs disabled:opacity-70"
-                  placeholder={loading ? "Alfred is processing operational data..." : isGenerating ? "Alfred is formulating response..." : "Transmit message to Alfred..."}
+                  placeholder={loading ? "Alfred is thinking..." : isGenerating ? "Alfred is replying..." : "Ask Alfred anything..."}
                 />
                 {isGenerating ? (
                   <button
@@ -432,7 +432,7 @@ export const AIMentor: React.FC = () => {
                     disabled={!inputValue.trim()}
                     className="bg-bat-gold hover:bg-bat-gold-dim disabled:opacity-50 text-bat-black font-bebas px-6 rounded text-md tracking-wider transition-colors"
                   >
-                    TRANSMIT
+                    SEND
                   </button>
                 )}
               </form>
@@ -446,11 +446,11 @@ export const AIMentor: React.FC = () => {
             
             {/* Left list pane */}
             <div className={`w-full md:w-80 overflow-y-auto no-scrollbar p-4 divide-y divide-bat-border flex-shrink-0 ${selectedReport ? 'hidden md:block' : ''}`}>
-              <h3 className="font-bebas text-lg text-bat-gold tracking-wider mb-4 px-2 uppercase">REPORTS ARCHIVE</h3>
+              <h3 className="font-bebas text-lg text-bat-gold tracking-wider mb-4 px-2 uppercase">WEEKLY REPORTS</h3>
               
               {weeklyReports.length === 0 ? (
                 <div className="p-8 text-center text-xs text-bat-gray font-mono uppercase">
-                  NO REPORT TRANSMISSIONS RECEIVED. Reports generate every Sunday.
+                  NO REPORTS FOUND YET. Reports automatically generate every Sunday.
                 </div>
               ) : (
                 weeklyReports.map((report) => {
@@ -481,9 +481,9 @@ export const AIMentor: React.FC = () => {
                 <div className="max-w-2xl mx-auto space-y-4">
                   <div className="flex justify-between items-center border-b border-bat-border pb-4">
                     <div>
-                      <span className="text-[9px] font-mono text-bat-gold uppercase">TRANSMISSION ENCRYPTED</span>
+                      <span className="text-[9px] font-mono text-bat-gold uppercase">WEEKLY SUMMARY</span>
                       <h2 className="font-bebas text-2xl text-bat-white tracking-widest mt-1">
-                        WEEKLY BRIEFING — {selectedReport.week_start}
+                        WEEKLY REPORT — {selectedReport.week_start}
                       </h2>
                     </div>
                     <button 
@@ -505,10 +505,10 @@ export const AIMentor: React.FC = () => {
                     <BatIcon size={72} />
                   </div>
                   <h4 className="font-bebas text-xl text-bat-gold tracking-widest uppercase">
-                    Select Transmission
+                    Select Report
                   </h4>
                   <p className="text-xs font-mono text-bat-gray max-w-sm mt-1">
-                    Select a weekly briefing record from the archives log to inspect historical tactical analyses.
+                    Select a weekly report from the history log to inspect your past insights.
                   </p>
                 </div>
               )}

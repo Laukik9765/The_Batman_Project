@@ -60,7 +60,7 @@ export const Topbar: React.FC<TopbarProps> = ({
           list.push({
             id: `goal-deadline-${goal.id}`,
             title: 'Goal Deadline Approaching',
-            message: `"${goal.name}" is due in ${daysDiff} days. Prepare your equipment.`,
+            message: `"${goal.name}" is due in ${daysDiff} days. Keep up the great work to finish on time.`,
             type: 'deadline',
             linkPath: '/goals'
           });
@@ -89,8 +89,8 @@ export const Topbar: React.FC<TopbarProps> = ({
         if (incompleteCount > 0) {
           list.push({
             id: 'daily-reminder-tasks',
-            title: 'Tactical Alert: Incomplete Checklist',
-            message: `Alfred: "Sir, you still have ${incompleteCount} incomplete daily checklist checkpoints."`,
+            title: 'Reminder: Incomplete Tasks',
+            message: `Alfred: "Sir, you still have ${incompleteCount} incomplete daily habits for today."`,
             type: 'deadline',
             linkPath: '/daily-tasks'
           });
@@ -162,7 +162,7 @@ export const Topbar: React.FC<TopbarProps> = ({
                 className="absolute right-0 mt-2 w-80 bg-bat-dark border border-bat-border rounded shadow-[0_4px_25px_rgba(0,0,0,0.8)] z-20 overflow-hidden bat-glow-gold"
               >
                 <div className="px-4 py-3 bg-bat-black border-b border-bat-border flex justify-between items-center">
-                  <span className="font-bebas text-lg tracking-wider text-bat-gold">TACTICAL NOTIFICATIONS</span>
+                  <span className="font-bebas text-lg tracking-wider text-bat-gold">NOTIFICATIONS</span>
                   <span className="font-mono text-xs px-2 py-0.5 rounded bg-bat-surface text-bat-white">
                     {notifications.length} NEW
                   </span>
@@ -171,7 +171,7 @@ export const Topbar: React.FC<TopbarProps> = ({
                 <div className="max-h-64 overflow-y-auto no-scrollbar divide-y divide-bat-border">
                   {notifications.length === 0 ? (
                     <div className="p-6 text-center text-xs text-bat-gray font-mono">
-                      SIGNALS CLEAR. NO NEW TRANSMISSIONS.
+                      No new notifications.
                     </div>
                   ) : (
                     notifications.map((notif) => (
